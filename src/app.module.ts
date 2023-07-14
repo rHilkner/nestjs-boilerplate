@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './users/user.module';
-import { CurrenciesModule } from './currencies/currencies.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ErrorLogModule } from './error-log/error-log.module';
-import { CallLogModule } from './call-log/call-log.module';
-import { ApiSessionModule } from './api-session/api-session.module';
+import { UserModule } from './services/users/user.module';
+import { CurrenciesModule } from './services/currencies/currencies.module';
+import { ErrorLogModule } from './services/error-log/error-log.module';
+import { CallLogModule } from './services/call-log/call-log.module';
+import { ApiSessionModule } from './services/api-session/api-session.module';
+import { PostgresModule } from './providers/postgres.module';
 
 @Module({
     imports: [
@@ -15,16 +15,8 @@ import { ApiSessionModule } from './api-session/api-session.module';
         ErrorLogModule,
         CallLogModule,
         UserModule,
-        TypeOrmModule.forRoot({
-            type: 'postgres',
-            host: 'localhost',
-            port: 5432,
-            username: 'root',
-            password: 'root',
-            database: 'test',
-            entities: [],
-            synchronize: true,
-        })],
+        PostgresModule
+    ],
     controllers: [AppController],
     providers: [AppService],
 })

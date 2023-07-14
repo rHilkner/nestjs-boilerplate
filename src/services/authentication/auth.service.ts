@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiSession } from '../api-session/api-session.model';
-import { ApiExceptions } from '../shared/exceptions/api-exceptions';
+import { ApiExceptions } from '../../common/exceptions/api-exceptions';
 import { User } from '../users/user.model';
 import { ApiSessionService } from '../api-session/api-session.service';
 import bcrypt from 'bcrypt';

@@ -1,11 +1,17 @@
 import { UserDto } from './user.dto';
-import { DbAuditable } from '../shared/base/db-auditable.abstract';
-import { UserRole } from '../shared/enums/UserRole';
+import { DbAuditable } from '../../common/db-auditable.abstract';
+import { UserRole } from '../../common/enums/UserRole';
+import { Column, Entity } from 'typeorm';
 
+@Entity({ name: 'app_user' })
 export class User extends DbAuditable {
+    @Column()
     email: string;
+    @Column()
     passwordHash: string;
+    @Column()
     role: UserRole;
+    @Column()
     lastAccessIp: string;
 
     constructor(

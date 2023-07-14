@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { ApiException } from '../base/api-exception';
+import { ApiException } from './api-exception';
 
 export const ApiExceptions = {
     UnexpectedErrorException: (errorMessage: string, debugMessage: string) => new ApiException({

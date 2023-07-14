@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BaseExceptionFilter } from '@nestjs/core';
-import { ApiException } from '../api-exception';
+import { ApiException } from '../../common/exceptions/api-exception';
 
 @Catch(ApiException, HttpException)
 export class ExceptionHandlerFilter extends BaseExceptionFilter {

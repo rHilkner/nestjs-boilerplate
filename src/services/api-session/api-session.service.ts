@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { ApiSession } from './api-session.model';
 import { User } from '../users/user.model';
-import { ApiExceptions } from '../shared/exceptions/api-exceptions';
+import { ApiExceptions } from '../../common/exceptions/api-exceptions';
 import { uuid } from 'uuidv4';
 import { Repository } from 'typeorm';
 
