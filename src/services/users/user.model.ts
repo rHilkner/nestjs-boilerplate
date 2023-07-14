@@ -23,12 +23,9 @@ export class User extends DbAuditable {
             currentUserId: string,
         },
     ) {
-        const currentDate = new Date();
         super({
             id: props.id,
-            createdDt: currentDate,
             createdBy: props.currentUserId,
-            updatedDt: currentDate,
             updatedBy: props.currentUserId,
         });
         this.email = props.email;
@@ -45,7 +42,6 @@ export class User extends DbAuditable {
         }
     ) {
         super.updateDbAuditable({
-            updatedDt: new Date(),
             updatedBy: props.currentUserId,
         })
         this.email = props.email;

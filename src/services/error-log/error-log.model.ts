@@ -37,12 +37,9 @@ export class ErrorLog extends DbAuditable {
             currentUserId: string,
         },
     ) {
-        const currentDate = new Date();
         super({
             id: props.id,
-            createdDt: currentDate,
             createdBy: props.currentUserId,
-            updatedDt: currentDate,
             updatedBy: props.currentUserId,
         });
         this.userId = props.userId;

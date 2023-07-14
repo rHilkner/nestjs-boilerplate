@@ -27,9 +27,7 @@ export class ApiSession extends DbAuditable {
         const currentDate = new Date();
         super({
             id: props.id,
-            createdDt: currentDate,
             createdBy: props.currentUserId,
-            updatedDt: currentDate,
             updatedBy: props.currentUserId,
         });
         this.userId = props.userId;
@@ -48,7 +46,6 @@ export class ApiSession extends DbAuditable {
     ) {
         const currentDate = new Date();
         super.updateDbAuditable({
-            updatedDt: currentDate,
             updatedBy: props.currentUserId,
         });
         this.ipAddress = props.ipAddress;

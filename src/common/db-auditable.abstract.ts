@@ -1,32 +1,27 @@
 import { AbstractModel } from './abstract.model';
-import { Column } from 'typeorm';
+import { Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export abstract class DbAuditable extends AbstractModel {
-    @Column()
+    @CreateDateColumn()
     createdDt: Date;
     @Column()
     createdBy: string;
-    @Column()
+    @UpdateDateColumn()
     updatedDt: Date;
     @Column()
     updatedBy: string;
 
     protected constructor(props: {
         id: string,
-        createdDt: Date,
         createdBy: string,
-        updatedDt: Date,
         updatedBy: string,
     }) {
         super({ id: props.id });
-        this.createdDt = props.createdDt;
         this.createdBy = props.createdBy;
-        this.updatedDt = props.updatedDt;
         this.updatedBy = props.updatedBy;
     }
 
-    updateDbAuditable(props: { updatedBy: string; updatedDt: Date }) {
+    updateDbAuditable(props: { updatedBy: string }) {
         this.updatedBy = props.updatedBy;
-        this.updatedDt = props.updatedDt;
     }
 }
