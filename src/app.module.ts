@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './users/user.module';
 import { CurrenciesModule } from './currencies/currencies.module';
-import { ApiSessionService } from './api-session/api-session.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SysErrorLogModule } from './sys-error-log/sys-error-log.module';
 import { SysCallLogModule } from './sys-call-log/sys-call-log.module';

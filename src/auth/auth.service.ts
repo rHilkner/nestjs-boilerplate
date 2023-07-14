@@ -1,6 +1,5 @@
-import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
 import { ApiSession } from '../api-session/api-session.model';
 import { ApiExceptions } from '../shared/exceptions/api-exceptions';
 import { User } from '../users/user.model';
