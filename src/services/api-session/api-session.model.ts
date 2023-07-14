@@ -1,5 +1,6 @@
 import { DbAuditable } from '../../common/db-auditable.abstract';
 import { Column, Entity } from 'typeorm';
+import { User } from '../users/user.model';
 
 @Entity(({ name: 'api_session' }))
 export class ApiSession extends DbAuditable {
@@ -13,6 +14,10 @@ export class ApiSession extends DbAuditable {
     startDt: Date;
     @Column()
     lastActivityDt: Date;
+    @Column()
+    active: boolean;
+
+    user: User;
 
     constructor(
         props: {
@@ -34,6 +39,7 @@ export class ApiSession extends DbAuditable {
         this.ipAddress = props.ipAddress;
         this.startDt = currentDate;
         this.lastActivityDt = props.lastActivityDt ?? currentDate;
+        this.active = true;
     }
 
     update(
@@ -41,6 +47,7 @@ export class ApiSession extends DbAuditable {
             ipAddress: string,
             lastActivityDt?: Date,
             currentUserId?: string,
+            active?: boolean,
         },
     ) {
         const currentDate = new Date();
@@ -51,5 +58,8 @@ export class ApiSession extends DbAuditable {
         this.lastActivityDt = props.lastActivityDt ?? currentDate;
         this.updatedDt = currentDate;
         this.updatedBy = props.currentUserId;
+        if (!!props.active) {
+            this.active = props.active;
+        }
     }
 }

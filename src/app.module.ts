@@ -7,9 +7,11 @@ import { ErrorLogModule } from './services/error-log/error-log.module';
 import { CallLogModule } from './services/call-log/call-log.module';
 import { ApiSessionModule } from './services/api-session/api-session.module';
 import { PostgresModule } from './providers/postgres.module';
+import { AuthModule } from './services/auth/auth.module';
 
 @Module({
     imports: [
+        AuthModule,
         ApiSessionModule,
         CurrenciesModule,
         ErrorLogModule,

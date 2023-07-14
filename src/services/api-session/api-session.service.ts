@@ -73,4 +73,12 @@ export class ApiSessionService {
         }
     }
 
+    async deleteApiSession(apiSession: ApiSession) {
+        await this.apiSessionRepository.delete(apiSession.id);
+    }
+
+    async invalidateApiSession(apiSession: ApiSession) {
+        apiSession.active = false;
+        await this.apiSessionRepository.save(apiSession);
+    }
 }

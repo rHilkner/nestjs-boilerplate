@@ -26,6 +26,7 @@ create table api_session
     ip_address       text,
     start_dt         timestamp not null,
     last_activity_dt timestamp not null,
+    active           boolean   not null,
     -- Audit columns
     created_dt       timestamp not null default now(),
     created_by       text      not null,

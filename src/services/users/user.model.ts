@@ -1,4 +1,4 @@
-import { UserDto } from './user.dto';
+import { UserDto } from './dto/user.dto';
 import { DbAuditable } from '../../common/db-auditable.abstract';
 import { UserRole } from '../../common/enums/UserRole';
 import { Column, Entity } from 'typeorm';
@@ -35,7 +35,6 @@ export class User extends DbAuditable {
     update(
         props: {
             email: string,
-            passwordHash: string,
             role: UserRole,
             currentUserId: string,
         }
@@ -44,7 +43,6 @@ export class User extends DbAuditable {
             currentUserId: props.currentUserId,
         })
         this.email = props.email;
-        this.passwordHash = props.passwordHash;
         this.role = props.role;
     }
 

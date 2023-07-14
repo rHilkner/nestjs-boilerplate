@@ -27,12 +27,14 @@ NestJS boilerplate
 - PostgreSQL + TypeORM
 
 ## Initial endpoints
-- `/user/signUp` - creates new user with email (unique), role (CUSTOMER or ADMIN), password (length > 8)
-- `/user/login` - logs user in with email and password
-- `/user/getCurrent` - CUSTOMER or ADMIN only, get current user from Bearer token in the request header
-- `/user/getAll` - ADMIN only, gets all users
+- `/auth/signUp` - creates new user with email (unique), role (CUSTOMER or ADMIN), password (length > 8)
+- `/auth/login` - logs user in with email and password
+- `/auth/logout` - logs user out with Bearer token in the request header
+- `/user/current` - CUSTOMER or ADMIN only, get current user from Bearer token in the request header
+- `/user/all` - ADMIN only, gets all users
 - `/user/create` - ADMIN only, creates user from email, role and password
-- `/currencies/currentPrice?from=USD&to=BRL` - CUSTOMER or ADMIN only, cached with TTL of 1 hour
+- `/user/update` - ADMIN only, updates user email, role and password
+- `/currencies/currentPrice?from=USD&to=BRL` - CUSTOMER or ADMIN only, cached with TTL of 1 hour, no DB call, calls external API to get current price of currency pair
 
 ## Initial DB tables
 - user
