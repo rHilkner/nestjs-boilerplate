@@ -1,6 +1,7 @@
 import { DbAuditable } from '../shared/base/db-auditable.abstract';
-import { Column } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
+@Entity()
 export class SysErrorLog extends DbAuditable {
     @Column()
     userId: string;

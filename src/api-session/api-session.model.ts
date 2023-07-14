@@ -6,53 +6,33 @@ export class ApiSession extends DbAuditable {
     @Column()
     userId: string;
     @Column()
-    role: string;
-    @Column()
-    permissions: string;
-    @Column()
     token: string;
     @Column()
     ipAddress: string;
     @Column()
-    statusActive: string;
-    @Column()
     startDt: Date;
     @Column()
     lastActivityDt: Date;
-    @Column()
-    expirationDt: Date;
-    @Column()
-    renewExpiration: boolean;
 
     constructor(
         props: {
             id: string,
             userId: string,
-            role: string,
-            permissions: string,
             token: string,
             ipAddress: string,
-            statusActive: string,
-            startDt: Date,
-            lastActivityDt: Date,
-            expirationDt: Date,
-            renewExpiration: boolean
-            createdDt: Date,
-            createdBy: string,
-            updatedDt: Date,
-            updatedBy: string,
+            lastActivityDt?: Date,
+            createdDt?: Date,
+            createdBy?: string,
+            updatedDt?: Date,
+            updatedBy?: string,
         },
     ) {
+        const currentDate = new Date();
         super({ ...props });
         this.userId = props.userId;
-        this.role = props.role;
-        this.permissions = props.permissions;
         this.token = props.token;
         this.ipAddress = props.ipAddress;
-        this.statusActive = props.statusActive;
-        this.startDt = props.startDt;
-        this.lastActivityDt = props.lastActivityDt;
-        this.expirationDt = props.expirationDt;
-        this.renewExpiration = props.renewExpiration;
+        this.startDt = currentDate;
+        this.lastActivityDt = props.lastActivityDt ?? currentDate;
     }
 }

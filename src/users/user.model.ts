@@ -1,25 +1,22 @@
 import { UserDto } from './user.dto';
+import { DbAuditable } from '../shared/base/db-auditable.abstract';
 
 export enum Role {
     CUSTOMER = 'CUSTOMER',
     ADMIN = 'ADMIN',
 }
 
-export class User {
-    id: number;
+export class User extends DbAuditable {
     email: string;
-    password: string;
+    passwordHash: string;
     role: Role;
-    createdDt: Date;
-    createdBy: string;
-    updatedDt: Date;
-    updatedBy: string;
+    lastAccessIp: string;
 
     constructor(
         props: {
-            id: number,
+            id: string,
             email: string,
-            password: string,
+            passwordHash: string,
             role: Role,
             createdDt: Date,
             createdBy: string,
@@ -27,14 +24,10 @@ export class User {
             updatedBy: string,
         },
     ) {
-        this.id = props.id;
+        super({ ...props });
         this.email = props.email;
-        this.password = props.password;
+        this.passwordHash = props.passwordHash;
         this.role = props.role;
-        this.createdDt = props.createdDt;
-        this.createdBy = props.createdBy;
-        this.updatedDt = props.updatedDt;
-        this.updatedBy = props.updatedBy;
     }
 
     toDto(): UserDto {

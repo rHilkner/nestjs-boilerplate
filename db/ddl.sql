@@ -21,7 +21,6 @@ create table api_session
         constraint pk_api_session primary key,
     user_id          uuid      not null, -- fk
     role             text      not null, -- purposeful redundancy (app_user.role)
-    permissions      text,
     token            text      not null,
     ip_address       text,
     status_active    text      not null,
@@ -73,7 +72,7 @@ create table sys_error_log
         constraint pk_error_log primary key,
     user_id             uuid, -- fk, redundant
     call_log_id         uuid, -- fk
-    http_status         text,
+    http_status         numeric,
     http_status_code    text,
     exception_class     text      not null,
     stack_trace         text      not null,

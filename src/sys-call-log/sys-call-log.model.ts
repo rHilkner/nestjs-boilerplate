@@ -1,6 +1,7 @@
 import { DbAuditable } from '../shared/base/db-auditable.abstract';
-import { Column } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
+@Entity()
 export class SysCallLog extends DbAuditable {
     @Column()
     transactionId: string;
@@ -23,15 +24,15 @@ export class SysCallLog extends DbAuditable {
     @Column()
     requestHeaders: string;
     @Column()
-    httpStatus: string;
+    httpStatus?: number;
     @Column()
-    responseBody: string;
+    responseBody?: string;
     @Column()
-    responseHeaders: string;
+    responseHeaders?: string;
     @Column()
     startDt: Date;
     @Column()
-    endDt: Date;
+    endDt?: Date;
 
     constructor(
         props: {
@@ -46,15 +47,15 @@ export class SysCallLog extends DbAuditable {
             parameters: string,
             requestBody: string,
             requestHeaders: string,
-            httpStatus: string,
-            responseBody: string,
-            responseHeaders: string,
-            startDt: Date,
-            endDt: Date,
-            createdDt: Date,
-            createdBy: string,
-            updatedDt: Date,
-            updatedBy: string,
+            httpStatus?: number,
+            responseBody?: string,
+            responseHeaders?: string,
+            startDt?: Date,
+            endDt?: Date,
+            createdDt?: Date,
+            createdBy?: string,
+            updatedDt?: Date,
+            updatedBy?: string,
         },
     ) {
         super({ ...props });
@@ -71,7 +72,7 @@ export class SysCallLog extends DbAuditable {
         this.httpStatus = props.httpStatus;
         this.responseBody = props.responseBody;
         this.responseHeaders = props.responseHeaders;
-        this.startDt = props.startDt;
+        this.startDt = props.startDt ?? new Date();
         this.endDt = props.endDt;
     }
 }
