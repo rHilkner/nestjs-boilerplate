@@ -8,7 +8,6 @@ export class CurrenciesController {
         private readonly currenciesService: CurrenciesService,
     ) {}
 
-    // /currencies/currentPrice?from=USD&to=BRL
     @Get('currentPrice')
     async getCurrentPrice(
         @Query('from') from: string,

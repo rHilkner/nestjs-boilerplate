@@ -36,6 +36,9 @@ export class UserService {
     }
 
     async updateUser(dto: UpdateUserDto): Promise<User> {
+        if (this.request.user.role !== UserRole.ADMIN && this.request.user.id !== dto.id) {
+            throw new Error('You are not allowed to update this user');
+        }
         const user = await this.userRepository.findOne({ where: { id: dto.id } });
         user.update({
             email: dto.email,

@@ -6,7 +6,7 @@ import { CurrenciesModule } from './services/currencies/currencies.module';
 import { ErrorLogModule } from './services/error-log/error-log.module';
 import { CallLogModule } from './services/call-log/call-log.module';
 import { ApiSessionModule } from './services/api-session/api-session.module';
-import { PostgresModule } from './providers/postgres.module';
+import { PostgresModule } from './config/postgres.module';
 import { AuthModule } from './services/auth/auth.module';
 import { HttpModule } from './services/http/http.module';
 
