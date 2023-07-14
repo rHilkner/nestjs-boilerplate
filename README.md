@@ -36,5 +36,5 @@ NestJS boilerplate
 
 ## Initial DB tables
 - User
-- SysCallLog
-- SysErrorLog
+- CallLog
+- ErrorLog

@@ -2,7 +2,7 @@ import { DbAuditable } from '../shared/base/db-auditable.abstract';
 import { Column, Entity } from 'typeorm';
 
 @Entity()
-export class SysCallLog extends DbAuditable {
+export class CallLog extends DbAuditable {
     @Column()
     transactionId: string;
     @Column()

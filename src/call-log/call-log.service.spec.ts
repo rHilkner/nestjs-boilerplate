@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SysErrorLogService } from './sys-error-log.service';
+import { CallLogService } from './call-log.service';
 
-describe('ApiSessionService', () => {
-  let service: SysErrorLogService;
+describe('CallLogService', () => {
+  let service: CallLogService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SysErrorLogService],
+      providers: [CallLogService],
     }).compile();
 
-    service = module.get<SysErrorLogService>(SysErrorLogService);
+    service = module.get<CallLogService>(CallLogService);
   });
 
   it('should be defined', () => {

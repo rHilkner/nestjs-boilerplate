@@ -1,20 +1,20 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { SysCallLogService } from '../../../sys-call-log/sys-call-log.service';
-import { SysCallLog } from '../../../sys-call-log/sys-call-log.model';
+import { CallLogService } from '../../../call-log/call-log.service';
+import { CallLog } from '../../../call-log/call-log.model';
 import { uuid } from 'uuidv4';
 
 @Injectable()
 export class CallLogInterceptor implements NestInterceptor {
-    constructor(private readonly sysCallLogService: SysCallLogService) {}
+    constructor(private readonly callLogService: CallLogService) {}
 
     async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
         const request = context.switchToHttp().getRequest();
         const response = context.switchToHttp().getResponse();
 
-        // Create SysCallLog object
-        const sysCallLog = new SysCallLog({
+        // Create CallLog object
+        const sysCallLog = new CallLog({
             id: uuid(),
             transactionId: request.transactionId,
             userId: request.user?.id,
@@ -30,20 +30,20 @@ export class CallLogInterceptor implements NestInterceptor {
         });
 
         // Save to DB
-        const savedSysCallLog = await this.sysCallLogService.create(sysCallLog);
+        const savedCallLog = await this.callLogService.create(sysCallLog);
 
         return next
             .handle()
             .pipe(
                 tap((resData) => {
-                    savedSysCallLog.update({
+                    savedCallLog.update({
                         httpStatus: response.statusCode,
                         responseBody: JSON.stringify(resData),
                         responseHeaders: JSON.stringify(response.getHeaders()),
                         endDt: new Date(),
-                        currentUserId: savedSysCallLog.userId,
+                        currentUserId: savedCallLog.userId,
                     });
-                    this.sysCallLogService.update(savedSysCallLog);
+                    this.callLogService.update(savedCallLog);
                 }),
             );
     }
