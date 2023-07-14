@@ -13,15 +13,14 @@ export abstract class DbAuditable extends AbstractModel {
 
     protected constructor(props: {
         id: string,
-        createdBy: string,
-        updatedBy: string,
+        currentUserId: string,
     }) {
         super({ id: props.id });
-        this.createdBy = props.createdBy;
-        this.updatedBy = props.updatedBy;
+        this.createdBy = props.currentUserId;
+        this.updatedBy = props.currentUserId;
     }
 
-    updateDbAuditable(props: { updatedBy: string }) {
-        this.updatedBy = props.updatedBy;
+    updateDbAuditable(props: { currentUserId: string }) {
+        this.updatedBy = props.currentUserId;
     }
 }

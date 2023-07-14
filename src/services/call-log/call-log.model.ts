@@ -58,8 +58,7 @@ export class CallLog extends DbAuditable {
         const currentDate = new Date();
         super({
             id: props.id,
-            createdBy: props.currentUserId,
-            updatedBy: props.currentUserId,
+            currentUserId: props.currentUserId,
         });
         this.transactionId = props.transactionId;
         this.userId = props.userId;
@@ -88,7 +87,7 @@ export class CallLog extends DbAuditable {
         },
     ) {
         super.updateDbAuditable({
-            updatedBy: props.currentUserId,
+            currentUserId: props.currentUserId,
         });
         this.httpStatus = props.httpStatus;
         this.responseBody = props.responseBody;

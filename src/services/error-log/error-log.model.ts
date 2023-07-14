@@ -39,8 +39,7 @@ export class ErrorLog extends DbAuditable {
     ) {
         super({
             id: props.id,
-            createdBy: props.currentUserId,
-            updatedBy: props.currentUserId,
+            currentUserId: props.currentUserId,
         });
         this.userId = props.userId;
         this.callLogId = props.callLogId;

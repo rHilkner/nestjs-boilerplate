@@ -25,8 +25,7 @@ export class User extends DbAuditable {
     ) {
         super({
             id: props.id,
-            createdBy: props.currentUserId,
-            updatedBy: props.currentUserId,
+            currentUserId: props.currentUserId,
         });
         this.email = props.email;
         this.passwordHash = props.passwordHash;
@@ -42,7 +41,7 @@ export class User extends DbAuditable {
         }
     ) {
         super.updateDbAuditable({
-            updatedBy: props.currentUserId,
+            currentUserId: props.currentUserId,
         })
         this.email = props.email;
         this.passwordHash = props.passwordHash;
