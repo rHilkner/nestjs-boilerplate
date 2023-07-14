@@ -8,16 +8,18 @@ import { CallLogModule } from './services/call-log/call-log.module';
 import { ApiSessionModule } from './services/api-session/api-session.module';
 import { PostgresModule } from './providers/postgres.module';
 import { AuthModule } from './services/auth/auth.module';
+import { HttpModule } from './services/http/http.module';
 
 @Module({
     imports: [
-        AuthModule,
         ApiSessionModule,
+        AuthModule,
+        CallLogModule,
         CurrenciesModule,
         ErrorLogModule,
-        CallLogModule,
+        HttpModule,
+        PostgresModule,
         UserModule,
-        PostgresModule
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -1,4 +1,20 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
+import { CurrenciesService } from './currencies.service';
 
 @Controller('currencies')
-export class CurrenciesController {}
+export class CurrenciesController {
+
+    constructor(
+        private readonly currenciesService: CurrenciesService,
+    ) {}
+
+    // /currencies/currentPrice?from=USD&to=BRL
+    @Get('currentPrice')
+    async getCurrentPrice(
+        @Query('from') from: string,
+        @Query('to') to: string
+    ): Promise<number> {
+        return await this.currenciesService.getCurrentPrice(from, to);
+    }
+
+}

@@ -4,7 +4,8 @@ import { ApiSession } from './api-session.model';
 import { ApiSessionService } from './api-session.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ApiSession])],
-  providers: [ApiSessionService],
+    imports: [TypeOrmModule.forFeature([ApiSession])],
+    providers: [ApiSessionService],
+    exports: [ApiSessionService],
 })
 export class ApiSessionModule {}

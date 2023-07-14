@@ -1,17 +1,17 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiSession } from '../api-session/api-session.model';
 import { ApiExceptions } from '../../common/exceptions/api-exceptions';
 import { ApiSessionService } from '../api-session/api-session.service';
 import bcrypt from 'bcrypt';
 import { UserService } from '../users/user.service';
-import { UserRole } from '../../common/enums/UserRole';
 import { REQUEST } from '@nestjs/core';
 import { SignUpDto } from './dto/sign-up.dto';
 import { LoginDto } from './dto/login.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/user.model';
 import { Repository } from 'typeorm';
+import { UserRole } from '../../common/enums/user-role';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +24,7 @@ export class AuthService {
         @Inject(REQUEST) private readonly request: any,
         private readonly apiSessionService: ApiSessionService,
         private readonly configService: ConfigService,
+        @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
     ) {
         this.shouldSessionExpire = this.configService.get<boolean>('app-env.auth.should-session-expire');

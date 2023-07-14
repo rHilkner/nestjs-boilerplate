@@ -1,6 +1,6 @@
 import { UserDto } from './dto/user.dto';
 import { DbAuditable } from '../../common/db-auditable.abstract';
-import { UserRole } from '../../common/enums/UserRole';
+import { UserRole } from '../../common/enums/user-role';
 import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'app_user' })
@@ -16,7 +16,6 @@ export class User extends DbAuditable {
 
     constructor(
         props: {
-            id: string,
             email: string,
             passwordHash: string,
             role: UserRole,
@@ -24,7 +23,6 @@ export class User extends DbAuditable {
         },
     ) {
         super({
-            id: props.id,
             currentUserId: props.currentUserId,
         });
         this.email = props.email;

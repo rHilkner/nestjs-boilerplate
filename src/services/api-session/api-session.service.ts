@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ApiSession } from './api-session.model';
 import { User } from '../users/user.model';
 import { ApiExceptions } from '../../common/exceptions/api-exceptions';
-import { uuid } from 'uuidv4';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -33,7 +32,6 @@ export class ApiSessionService {
     async createAndSaveApiSession(user: User): Promise<ApiSession> {
         this.logger.debug(`Creating new API session for user: ${user.email}`);
         const newApiSession = new ApiSession({
-            id: uuid(),
             userId: user.id,
             token: this.generateNewSessionToken(),
             ipAddress: user.lastAccessIp,

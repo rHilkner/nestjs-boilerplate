@@ -21,7 +21,6 @@ export class ApiSession extends DbAuditable {
 
     constructor(
         props: {
-            id: string,
             userId: string,
             token: string,
             ipAddress: string,
@@ -31,7 +30,6 @@ export class ApiSession extends DbAuditable {
     ) {
         const currentDate = new Date();
         super({
-            id: props.id,
             currentUserId: props.currentUserId,
         });
         this.userId = props.userId;

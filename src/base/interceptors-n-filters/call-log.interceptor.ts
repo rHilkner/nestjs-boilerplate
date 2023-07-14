@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { CallLogService } from '../../services/call-log/call-log.service';
 import { CallLog } from '../../services/call-log/call-log.model';
-import { uuid } from 'uuidv4';
+import { CallType } from '../../common/enums/call-type';
 
 @Injectable()
 export class CallLogInterceptor implements NestInterceptor {
@@ -15,10 +15,10 @@ export class CallLogInterceptor implements NestInterceptor {
 
         // Create CallLog object
         const sysCallLog = new CallLog({
-            id: uuid(),
             transactionId: request.transactionId,
             userId: request.user?.id,
             sessionId: request.apiSession?.id,
+            type: CallType.INCOMING,
             url: request.url,
             ip: request.ip,
             method: request.method,
@@ -30,7 +30,7 @@ export class CallLogInterceptor implements NestInterceptor {
         });
 
         // Save to DB
-        const savedCallLog = await this.callLogService.create(sysCallLog);
+        const savedCallLog = await this.callLogService.save(sysCallLog);
 
         return next
             .handle()
@@ -43,7 +43,7 @@ export class CallLogInterceptor implements NestInterceptor {
                         endDt: new Date(),
                         currentUserId: savedCallLog.userId,
                     });
-                    this.callLogService.update(savedCallLog);
+                    this.callLogService.save(savedCallLog);
                 }),
             );
     }

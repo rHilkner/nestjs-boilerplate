@@ -24,7 +24,6 @@ export class ErrorLog extends DbAuditable {
 
     constructor(
         props: {
-            id: string,
             userId: string,
             callLogId: string,
             httpStatus: string,
@@ -38,7 +37,6 @@ export class ErrorLog extends DbAuditable {
         },
     ) {
         super({
-            id: props.id,
             currentUserId: props.currentUserId,
         });
         this.userId = props.userId;

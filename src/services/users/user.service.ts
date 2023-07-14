@@ -1,11 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { uuid } from 'uuidv4';
 import { REQUEST } from '@nestjs/core';
 import { AuthService } from '../auth/auth.service';
-import { UserRole } from '../../common/enums/UserRole';
+import { UserRole } from '../../common/enums/user-role';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -14,6 +13,7 @@ export class UserService {
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
         @Inject(REQUEST) private readonly request: any,
+        @Inject(forwardRef(() => AuthService))
         private readonly authService: AuthService,
     ) {}
 
@@ -27,7 +27,6 @@ export class UserService {
 
     async createUser(email: string, password: string, role: UserRole): Promise<User> {
         const newUser = new User({
-            id: uuid(),
             email,
             passwordHash: await this.authService.encodePassword(password),
             role,

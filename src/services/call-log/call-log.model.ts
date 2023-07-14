@@ -1,5 +1,6 @@
 import { DbAuditable } from '../../common/db-auditable.abstract';
 import { Column, Entity } from 'typeorm';
+import { CallType } from '../../common/enums/call-type';
 
 @Entity({ name: 'call_log' })
 export class CallLog extends DbAuditable {
@@ -9,6 +10,8 @@ export class CallLog extends DbAuditable {
     userId: string;
     @Column()
     sessionId: string;
+    @Column()
+    type: CallType;
     @Column()
     url: string;
     @Column()
@@ -36,10 +39,10 @@ export class CallLog extends DbAuditable {
 
     constructor(
         props: {
-            id: string,
             transactionId: string,
             userId: string,
             sessionId: string,
+            type: CallType,
             url: string,
             ip: string,
             method: string,
@@ -57,12 +60,12 @@ export class CallLog extends DbAuditable {
     ) {
         const currentDate = new Date();
         super({
-            id: props.id,
             currentUserId: props.currentUserId,
         });
         this.transactionId = props.transactionId;
         this.userId = props.userId;
         this.sessionId = props.sessionId;
+        this.type = props.type;
         this.url = props.url;
         this.ip = props.ip;
         this.method = props.method;

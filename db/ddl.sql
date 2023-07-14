@@ -1,4 +1,5 @@
 create type user_role as enum ('CUSTOMER', 'ADMIN');
+create type call_type as enum ('INCOMING', 'OUTGOING');
 
 drop table app_user;
 create table app_user
@@ -43,6 +44,7 @@ create table call_log
     transaction_id   text      not null,
     user_id          uuid, -- fk, redundant (api_session.user_id)
     api_session_id   uuid, -- fk
+    type             call_type not null,
     url              text,
     ip               text,
     method           text,

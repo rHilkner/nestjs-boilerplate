@@ -6,5 +6,6 @@ import { CallLogService } from './call-log.service';
 @Module({
   imports: [TypeOrmModule.forFeature([CallLog])],
   providers: [CallLogService],
+  exports: [CallLogService],
 })
 export class CallLogModule {}

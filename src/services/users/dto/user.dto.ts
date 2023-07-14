@@ -1,6 +1,6 @@
 import { User } from '../user.model';
 import { IsEmail, IsEnum, IsNotEmpty, MinLength } from 'class-validator';
-import { UserRole } from '../../../common/enums/UserRole';
+import { UserRole } from '../../../common/enums/user-role';
 
 export class UserDto {
   @IsNotEmpty()

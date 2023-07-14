@@ -1,8 +1,12 @@
-import { UserRole } from '../../../common/enums/UserRole';
+import { UserRole } from '../../../common/enums/user-role';
+import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
 
 export class UpdateUserDto {
+    @IsNotEmpty()
     id: string;
+    @IsEmail()
     email: string;
+    @IsEnum(UserRole)
     role: UserRole;
 
     constructor(props: { id: string, email: string, role: UserRole }) {
