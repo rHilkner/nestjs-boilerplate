@@ -1,16 +1,18 @@
 create type user_role as enum ('CUSTOMER', 'ADMIN');
 
+drop table app_user;
 create table app_user
 (
-    id         serial primary key,
-    email      varchar(255) unique not null,
-    password   varchar(255)        not null,
-    role       user_role           not null default 'CUSTOMER',
-    created_dt timestamp           not null default current_timestamp,
-    created_by varchar(255)        not null,
-    updated_dt timestamp           not null default current_timestamp,
-    updated_by varchar(255)        not null
+    id            uuid                         default gen_random_uuid(),
+    email         varchar(255) unique not null,
+    password_hash varchar(255)        not null,
+    role          user_role           not null,
+    created_dt    timestamp           not null default current_timestamp,
+    created_by    varchar(255)        not null,
+    updated_dt    timestamp           not null default current_timestamp,
+    updated_by    varchar(255)        not null
 );
+create index ix_app_user_1 on app_user (email);
 
 -- SYSTEM BASE TABLES
 
@@ -20,14 +22,10 @@ create table api_session
     id               uuid               default gen_random_uuid()
         constraint pk_api_session primary key,
     user_id          uuid      not null, -- fk
-    role             text      not null, -- purposeful redundancy (app_user.role)
     token            text      not null,
     ip_address       text,
-    status_active    text      not null,
     start_dt         timestamp not null,
     last_activity_dt timestamp not null,
-    expiration_dt    timestamp,
-    renew_expiration boolean   not null,
     -- Audit columns
     created_dt       timestamp not null default now(),
     created_by       text      not null,
@@ -36,14 +34,14 @@ create table api_session
 );
 create index ix_api_session_1 on api_session (token);
 
-drop table sys_call_log;
-create table sys_call_log
+drop table call_log;
+create table call_log
 (
     id               uuid               default gen_random_uuid()
         constraint pk_call_log primary key,
     transaction_id   text      not null,
     user_id          uuid, -- fk, redundant (api_session.user_id)
-    session_id       uuid, -- fk
+    api_session_id   uuid, -- fk
     url              text,
     ip               text,
     method           text,
@@ -62,11 +60,11 @@ create table sys_call_log
     updated_dt       timestamp not null default now(),
     updated_by       text      not null
 );
-create index fk_call_log_1 on sys_call_log (user_id);
-create index fk_call_log_2 on sys_call_log (session_id);
+create index fk_call_log_1 on call_log (user_id);
+create index fk_call_log_2 on call_log (api_session_id);
 
-drop table sys_error_log;
-create table sys_error_log
+drop table error_log;
+create table error_log
 (
     id                  uuid               default gen_random_uuid()
         constraint pk_error_log primary key,
@@ -85,5 +83,5 @@ create table sys_error_log
     updated_dt          timestamp not null default now(),
     updated_by          text      not null
 );
-create index fk_error_log_1 on sys_error_log (user_id);
-create index fk_error_log_2 on sys_error_log (call_log_id);
+create index fk_error_log_1 on error_log (user_id);
+create index fk_error_log_2 on error_log (call_log_id);
