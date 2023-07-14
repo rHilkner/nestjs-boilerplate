@@ -5,11 +5,17 @@ import { UserModule } from './users/user.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { ApiSessionService } from './api-session/api-session.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SysErrorLogModule } from './sys-error-log/sys-error-log.module';
+import { SysCallLogModule } from './sys-call-log/sys-call-log.module';
+import { ApiSessionModule } from './api-session/api-session.module';
 
 @Module({
     imports: [
-        UserModule,
+        ApiSessionModule,
         CurrenciesModule,
+        SysErrorLogModule,
+        SysCallLogModule,
+        UserModule,
         TypeOrmModule.forRoot({
             type: 'postgres',
             host: 'localhost',
@@ -21,6 +27,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             synchronize: true,
         })],
     controllers: [AppController],
-    providers: [AppService, ApiSessionService],
+    providers: [AppService],
 })
 export class AppModule {}

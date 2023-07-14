@@ -1,15 +1,11 @@
 import { UserDto } from './user.dto';
 import { DbAuditable } from '../shared/base/db-auditable.abstract';
-
-export enum Role {
-    CUSTOMER = 'CUSTOMER',
-    ADMIN = 'ADMIN',
-}
+import { UserRole } from '../shared/enums/UserRole';
 
 export class User extends DbAuditable {
     email: string;
     passwordHash: string;
-    role: Role;
+    role: UserRole;
     lastAccessIp: string;
 
     constructor(
@@ -17,7 +13,7 @@ export class User extends DbAuditable {
             id: string,
             email: string,
             passwordHash: string,
-            role: Role,
+            role: UserRole,
             createdDt: Date,
             createdBy: string,
             updatedDt: Date,

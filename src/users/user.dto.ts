@@ -1,9 +1,10 @@
-import { User, Role } from './user.model';
+import { User } from './user.model';
 import { IsEmail, IsEnum, IsNotEmpty, MinLength } from 'class-validator';
+import { UserRole } from '../shared/enums/UserRole';
 
 export class UserDto {
   @IsNotEmpty()
-  id: number;
+  id: string;
 
   @IsNotEmpty()
   @IsEmail()
@@ -14,8 +15,8 @@ export class UserDto {
   password: string;
 
   @IsNotEmpty()
-  @IsEnum(Role)
-  role: Role;
+  @IsEnum(UserRole)
+  role: UserRole;
 
   constructor(user: User) {
     this.id = user.id;

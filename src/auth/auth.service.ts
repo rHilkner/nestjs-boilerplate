@@ -29,42 +29,21 @@ export class AuthService {
         return await bcrypt.compare(password, hashPassword);
     }
 
-    // The authenticate() method is split into two methods because in NestJS,
-    // request data is not directly passed to services. It's extracted in the controller
-    // and then passed to the service methods.
+    /**
+     * Authenticates a user and returns a new API session
+     * @param appUser
+     * @param password
+     * @param requestIp
+     */
     async authenticate(appUser: User, password: string, requestIp?: string): Promise<ApiSession> {
         this.logger.log(`Attempting to authenticate [${appUser.role} / ${appUser.email}] with password`);
         if (appUser.passwordHash == null || !await this.comparePassword(password, appUser.passwordHash)) {
-            throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED);
+            throw ApiExceptions.UnauthorizedException(
+                'Invalid credentials',
+                `Invalid credentials for user [${appUser.email}]`
+            );
         }
         appUser.lastAccessIp = requestIp;
         return await this.apiSessionService.createAndSaveApiSession(appUser);
-    }
-
-    authorize(userRole: string, userPermissions: string[], securedRoles: string[], securedPermissions: string[], endpoint: string) {
-        this.logger.log(`Authorizing request for endpoint [${endpoint}]`);
-
-        if (securedRoles.length === 0) {
-            this.logger.log(`Endpoint [${endpoint}] is not secured - authorizing request`);
-            return;
-        }
-
-        if (!userRole || !securedRoles.includes(userRole)) {
-            this.logger.error(`No session roles authorized for endpoint [${endpoint}]`);
-            throw ApiExceptions.ForbiddenException(
-                "No session roles authorized for endpoint",
-                `No session roles authorized for endpoint [${endpoint}]`
-            );
-        }
-
-        if (securedPermissions.length > 0 && !securedPermissions.some(p => userPermissions.includes(p))) {
-            this.logger.error(`No session permissions authorized for endpoint [${endpoint}]`);
-            throw ApiExceptions.ForbiddenException(
-                "No session permissions authorized for endpoint",
-                `No session permissions authorized for endpoint [${endpoint}]`
-            );
-        }
-
-        this.logger.log(`Session authorized for endpoint [${endpoint}]`);
     }
 }
