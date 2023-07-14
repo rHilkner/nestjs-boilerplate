@@ -34,13 +34,17 @@ export class SysErrorLog extends DbAuditable {
             errorMessage: string,
             debugMessage: string,
             exceptionTimestamp: Date,
-            createdDt: Date,
-            createdBy: string,
-            updatedDt: Date,
-            updatedBy: string,
+            currentUserId: string,
         },
     ) {
-        super({ ...props });
+        const currentDate = new Date();
+        super({
+            id: props.id,
+            createdDt: currentDate,
+            createdBy: props.currentUserId,
+            updatedDt: currentDate,
+            updatedBy: props.currentUserId,
+        });
         this.userId = props.userId;
         this.callLogId = props.callLogId;
         this.httpStatus = props.httpStatus;

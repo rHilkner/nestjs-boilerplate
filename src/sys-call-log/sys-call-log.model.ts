@@ -52,13 +52,17 @@ export class SysCallLog extends DbAuditable {
             responseHeaders?: string,
             startDt?: Date,
             endDt?: Date,
-            createdDt?: Date,
-            createdBy?: string,
-            updatedDt?: Date,
-            updatedBy?: string,
+            currentUserId: string,
         },
     ) {
-        super({ ...props });
+        const currentDate = new Date();
+        super({
+            id: props.id,
+            createdDt: currentDate,
+            createdBy: props.currentUserId,
+            updatedDt: currentDate,
+            updatedBy: props.currentUserId,
+        });
         this.transactionId = props.transactionId;
         this.userId = props.userId;
         this.sessionId = props.sessionId;
@@ -72,7 +76,27 @@ export class SysCallLog extends DbAuditable {
         this.httpStatus = props.httpStatus;
         this.responseBody = props.responseBody;
         this.responseHeaders = props.responseHeaders;
-        this.startDt = props.startDt ?? new Date();
+        this.startDt = props.startDt ?? currentDate;
+        this.endDt = props.endDt;
+    }
+
+    update(
+        props: {
+            httpStatus?: number,
+            responseBody?: string,
+            responseHeaders?: string,
+            endDt?: Date,
+            currentUserId: string,
+        },
+    ) {
+        const currentDate = new Date();
+        super.updateDbAuditable({
+            updatedDt: currentDate,
+            updatedBy: props.currentUserId,
+        });
+        this.httpStatus = props.httpStatus;
+        this.responseBody = props.responseBody;
+        this.responseHeaders = props.responseHeaders;
         this.endDt = props.endDt;
     }
 }

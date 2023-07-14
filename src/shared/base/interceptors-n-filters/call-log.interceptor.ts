@@ -26,6 +26,7 @@ export class CallLogInterceptor implements NestInterceptor {
             parameters: JSON.stringify(request.params),
             requestBody: JSON.stringify(request.body),
             requestHeaders: JSON.stringify(request.headers),
+            currentUserId: request.user?.id,
         });
 
         // Save to DB
@@ -35,10 +36,13 @@ export class CallLogInterceptor implements NestInterceptor {
             .handle()
             .pipe(
                 tap((resData) => {
-                    savedSysCallLog.httpStatus = response.statusCode;
-                    savedSysCallLog.responseBody = JSON.stringify(resData);
-                    savedSysCallLog.responseHeaders = JSON.stringify(response.getHeaders());
-                    savedSysCallLog.endDt = new Date();
+                    savedSysCallLog.update({
+                        httpStatus: response.statusCode,
+                        responseBody: JSON.stringify(resData),
+                        responseHeaders: JSON.stringify(response.getHeaders()),
+                        endDt: new Date(),
+                        currentUserId: savedSysCallLog.userId,
+                    });
                     this.sysCallLogService.update(savedSysCallLog);
                 }),
             );
