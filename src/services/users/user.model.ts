@@ -22,9 +22,7 @@ export class User extends DbAuditable {
             currentUserId: string,
         },
     ) {
-        super({
-            currentUserId: props.currentUserId,
-        });
+        super({ currentUserId: props.currentUserId });
         this.email = props.email;
         this.passwordHash = props.passwordHash;
         this.role = props.role;
@@ -37,9 +35,7 @@ export class User extends DbAuditable {
             currentUserId: string,
         }
     ) {
-        super.updateDbAuditable({
-            currentUserId: props.currentUserId,
-        })
+        super.updateDbAuditable({ currentUserId: props.currentUserId })
         this.email = props.email;
         this.role = props.role;
     }

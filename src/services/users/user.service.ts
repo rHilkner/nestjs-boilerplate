@@ -1,11 +1,11 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { REQUEST } from '@nestjs/core';
-import { AuthService } from '../auth/auth.service';
 import { UserRole } from '../../common/enums/user-role';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { encrypt } from '../../common/libs/encrypt.util';
 
 @Injectable()
 export class UserService {
@@ -13,8 +13,6 @@ export class UserService {
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
         @Inject(REQUEST) private readonly request: any,
-        @Inject(forwardRef(() => AuthService))
-        private readonly authService: AuthService,
     ) {}
 
     async getUserById(userId: string): Promise<User> {
@@ -28,7 +26,7 @@ export class UserService {
     async createUser(email: string, password: string, role: UserRole): Promise<User> {
         const newUser = new User({
             email,
-            passwordHash: await this.authService.encodePassword(password),
+            passwordHash: await encrypt(password),
             role,
             currentUserId: this.request.user?.id as string | undefined,
         });
@@ -54,5 +52,9 @@ export class UserService {
 
     async getCurrentUser(): Promise<User> {
         return await this.userRepository.findOne({ where: { id: this.request.user?.id } });
+    }
+
+    async save(user: User): Promise<User> {
+        return await this.userRepository.save(user);
     }
 }

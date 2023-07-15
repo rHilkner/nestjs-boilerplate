@@ -7,7 +7,9 @@ export class ApiSession extends DbAuditable {
     @Column()
     userId: string;
     @Column()
-    token: string;
+    accessToken: string;
+    @Column()
+    refreshToken: string;
     @Column()
     ipAddress: string;
     @Column()
@@ -22,18 +24,18 @@ export class ApiSession extends DbAuditable {
     constructor(
         props: {
             userId: string,
-            token: string,
+            accessToken: string,
+            refreshToken: string,
             ipAddress: string,
             lastActivityDt?: Date,
             currentUserId?: string,
         },
     ) {
+        super({ currentUserId: props.currentUserId });
         const currentDate = new Date();
-        super({
-            currentUserId: props.currentUserId,
-        });
         this.userId = props.userId;
-        this.token = props.token;
+        this.accessToken = props.accessToken;
+        this.refreshToken = props.refreshToken;
         this.ipAddress = props.ipAddress;
         this.startDt = currentDate;
         this.lastActivityDt = props.lastActivityDt ?? currentDate;
@@ -42,20 +44,22 @@ export class ApiSession extends DbAuditable {
 
     update(
         props: {
-            ipAddress: string,
+            ipAddress?: string,
             lastActivityDt?: Date,
             currentUserId?: string,
             active?: boolean,
+            refreshToken?: string,
         },
     ) {
+        super.updateDbAuditable({ currentUserId: props.currentUserId });
         const currentDate = new Date();
-        super.updateDbAuditable({
-            currentUserId: props.currentUserId,
-        });
-        this.ipAddress = props.ipAddress;
         this.lastActivityDt = props.lastActivityDt ?? currentDate;
-        this.updatedDt = currentDate;
-        this.updatedBy = props.currentUserId;
+        if (!!props.ipAddress) {
+            this.ipAddress = props.ipAddress;
+        }
+        if (!!props.refreshToken) {
+            this.refreshToken = props.refreshToken;
+        }
         if (!!props.active) {
             this.active = props.active;
         }

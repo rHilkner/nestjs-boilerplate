@@ -33,27 +33,34 @@ export class ApiSessionService {
         this.logger.debug(`Creating new API session for user: ${user.email}`);
         const newApiSession = new ApiSession({
             userId: user.id,
-            token: this.generateNewSessionToken(),
+            accessToken: this.generateNewSessionToken(),
+            refreshToken: this.generateNewSessionToken(),
             ipAddress: user.lastAccessIp,
         });
         return await this.apiSessionRepository.save(newApiSession);
     }
 
-    async getActiveApiSession(token: string): Promise<ApiSession> {
-        const apiSession = await this.apiSessionRepository.findOne({ where: { token } });
+    async getActiveApiSession(accessToken: string): Promise<ApiSession> {
+        const apiSession = await this.apiSessionRepository.findOne({ where: { accessToken } });
         if (!apiSession) {
-            this.logger.error(`Invalid authorization token: ${token}`);
+            this.logger.error(`Invalid authorization token: ${accessToken}`);
             throw ApiExceptions.BadRequestException(
                 'Invalid authorization token',
-                `Invalid authorization token ${token}`
+                `Invalid authorization token ${accessToken}`
             );
         } else if (apiSession.startDt.getTime() + this.sessionExpiration * 1000 < new Date().getTime()) {
-            this.logger.error(`Authorization token revoked: ${token}`);
+            this.logger.error(`Authorization token revoked: ${accessToken}`);
             throw ApiExceptions.BadRequestException(
                 'Authorization token revoked',
-                `Authorization token revoked ${token}`
+                `Authorization token revoked ${accessToken}`
             );
         }
+        apiSession.lastActivityDt = new Date();
+        return await this.apiSessionRepository.save(apiSession);
+    }
+
+    async renewAccessToken(apiSession: ApiSession): Promise<ApiSession> {
+        apiSession.accessToken = this.generateNewSessionToken();
         apiSession.lastActivityDt = new Date();
         return await this.apiSessionRepository.save(apiSession);
     }

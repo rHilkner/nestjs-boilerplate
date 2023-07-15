@@ -3,15 +3,12 @@ import { ConfigService } from '@nestjs/config';
 import { ApiSession } from '../api-session/api-session.model';
 import { ApiExceptions } from '../../common/exceptions/api-exceptions';
 import { ApiSessionService } from '../api-session/api-session.service';
-import bcrypt from 'bcrypt';
 import { UserService } from '../users/user.service';
 import { REQUEST } from '@nestjs/core';
 import { SignUpDto } from './dto/sign-up.dto';
 import { LoginDto } from './dto/login.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/user.model';
-import { Repository } from 'typeorm';
 import { UserRole } from '../../common/enums/user-role';
+import { compare } from '../../common/libs/encrypt.util';
 
 @Injectable()
 export class AuthService {
@@ -20,11 +17,9 @@ export class AuthService {
     private readonly sessionExpiresIn: number;
 
     constructor(
-        @InjectRepository(User) private readonly userRepository: Repository<User>,
         @Inject(REQUEST) private readonly request: any,
         private readonly apiSessionService: ApiSessionService,
         private readonly configService: ConfigService,
-        @Inject(forwardRef(() => UserService))
         private readonly userService: UserService,
     ) {
         this.shouldSessionExpire = this.configService.get<boolean>('app-env.auth.should-session-expire');
@@ -39,14 +34,14 @@ export class AuthService {
     async login({ email, password }: LoginDto): Promise<ApiSession> {
         let user = await this.userService.findByEmail(email);
         this.logger.log(`Attempting to authenticate [${user.role} / ${user.email}] with password`);
-        if (user.passwordHash == null || !await this.comparePassword(password, user.passwordHash)) {
+        if (user.passwordHash == null || !await compare(password, user.passwordHash)) {
             throw ApiExceptions.UnauthorizedException(
                 'Invalid credentials',
                 `Invalid credentials for user [${user.email}]`
             );
         }
         user.lastAccessIp = this.request.ip;
-        user = await this.userRepository.save(user)
+        user = await this.userService.save(user)
         const apiSession = await this.apiSessionService.createAndSaveApiSession(user);
         apiSession.user = user;
         return apiSession;
@@ -69,13 +64,5 @@ export class AuthService {
     async signOut(): Promise<void> {
         const apiSession = await this.request.apiSession;
         await this.apiSessionService.invalidateApiSession(apiSession);
-    }
-
-    async encodePassword(password: string): Promise<string> {
-        return await bcrypt.hash(password, 10);
-    }
-
-    private async comparePassword(password: string, hashPassword: string): Promise<boolean> {
-        return await bcrypt.compare(password, hashPassword);
     }
 }
