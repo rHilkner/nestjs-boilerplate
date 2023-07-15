@@ -1,11 +1,21 @@
-import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
+import { ArgumentsHost, Catch, HttpException, Inject, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { ApiException } from '../../common/exceptions/api-exception';
+import { ErrorLogService } from '../../services/error-log/error-log.service';
 
-@Catch(ApiException, HttpException)
+@Catch()
 export class ExceptionHandlerFilter extends BaseExceptionFilter {
-    catch(exception: ApiException | HttpException, host: ArgumentsHost) {
+
+    private readonly logger = new Logger(ExceptionHandlerFilter.name);
+
+    constructor(
+        private readonly errorLogService: ErrorLogService,
+    ) {
+        super();
+    }
+
+    catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
@@ -19,33 +29,17 @@ export class ExceptionHandlerFilter extends BaseExceptionFilter {
             timestamp: string,
         }
 
-        let responseBody: ErrorDto;
+        const ex = ApiException.fromException(exception);
+        const responseBody: ErrorDto = {
+            errorCode: ex.errorCode,
+            httpStatus: ex.httpStatus,
+            appErrorMessage: ex.appErrorMessage,
+            errorMessage: ex.errorMessage,
+            timestamp: ex.timestamp.toISOString(),
+        };
 
-        if (exception instanceof ApiException) {
-            responseBody = {
-                errorCode: exception.errorCode,
-                httpStatus: exception.httpStatus,
-                appErrorMessage: exception.appErrorMessage,
-                errorMessage: exception.errorMessage,
-                timestamp: exception.timestamp.toISOString(),
-            };
-        } else if (exception instanceof HttpException) {
-            responseBody = {
-                errorCode: 'INTERNAL_SERVER_ERROR',
-                httpStatus: status,
-                appErrorMessage: 'Internal server error.',
-                errorMessage: exception.message,
-                timestamp: new Date().toISOString(),
-            };
-        } else {
-            responseBody = {
-                errorCode: 'INTERNAL_SERVER_ERROR',
-                httpStatus: 500,
-                appErrorMessage: 'Internal server error.',
-                errorMessage: 'Internal server error.',
-                timestamp: new Date().toISOString(),
-            };
-        }
+        this.errorLogService.saveException(exception)
+            .catch(error => this.logger.error(error));
 
         response.status(status).json(responseBody);
     }

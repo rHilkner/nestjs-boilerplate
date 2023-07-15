@@ -8,9 +8,7 @@ export class ErrorLog extends DbAuditable {
     @Column()
     callLogId: string;
     @Column()
-    httpStatus: string;
-    @Column()
-    httpStatusCode: string;
+    httpStatus: number;
     @Column()
     exceptionClass: string;
     @Column()
@@ -26,13 +24,12 @@ export class ErrorLog extends DbAuditable {
         props: {
             userId: string,
             callLogId: string,
-            httpStatus: string,
-            httpStatusCode: string,
+            httpStatus: number,
             exceptionClass: string,
             stackTrace: string,
             errorMessage: string,
             debugMessage: string,
-            exceptionTimestamp: Date,
+            timestamp: Date,
             currentUserId: string,
         },
     ) {
@@ -42,11 +39,10 @@ export class ErrorLog extends DbAuditable {
         this.userId = props.userId;
         this.callLogId = props.callLogId;
         this.httpStatus = props.httpStatus;
-        this.httpStatusCode = props.httpStatusCode;
         this.exceptionClass = props.exceptionClass;
         this.stackTrace = props.stackTrace;
         this.errorMessage = props.errorMessage;
         this.debugMessage = props.debugMessage;
-        this.exceptionTimestamp = props.exceptionTimestamp;
+        this.exceptionTimestamp = props.timestamp;
     }
 }

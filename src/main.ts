@@ -7,16 +7,18 @@ import { CallLogInterceptor } from './base/interceptors-n-filters/call-log.inter
 import { ApiSessionService } from './services/api-session/api-session.service';
 import { ExceptionHandlerFilter } from './base/interceptors-n-filters/exception-handler-filter';
 import { RolesGuard } from './base/guards/roles.guard';
+import { ErrorLogService } from './services/error-log/error-log.service';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     const apiSessionService = app.get(ApiSessionService);
     const sysCallLogService = app.get(CallLogService);
+    const errorLogService = app.get(ErrorLogService);
     const userService = app.get(UserService);
 
     app.useGlobalGuards(new RolesGuard(new Reflector()));
-    app.useGlobalFilters(new ExceptionHandlerFilter());
+    app.useGlobalFilters(new ExceptionHandlerFilter(errorLogService));
     app.useGlobalInterceptors(
         new AuthenticationInterceptor(apiSessionService, userService),
         new CallLogInterceptor(sysCallLogService)

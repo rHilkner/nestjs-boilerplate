@@ -52,7 +52,7 @@ create table call_log
     parameters       text,
     request_body     text,
     request_headers  text,
-    http_status      text,
+    http_status      numeric,
     response_body    text,
     response_headers text,
     start_dt         timestamp not null,
@@ -69,22 +69,21 @@ create index fk_call_log_2 on call_log (api_session_id);
 drop table error_log;
 create table error_log
 (
-    id                  uuid               default gen_random_uuid()
+    id              uuid               default gen_random_uuid()
         constraint pk_error_log primary key,
-    user_id             uuid, -- fk, redundant
-    call_log_id         uuid, -- fk
-    http_status         numeric,
-    http_status_code    text,
-    exception_class     text      not null,
-    stack_trace         text      not null,
-    error_message       text      not null,
-    debug_message       text,
-    exception_timestamp timestamp not null,
+    user_id         uuid, -- fk, redundant
+    call_log_id     uuid, -- fk
+    http_status     numeric,
+    exception_class text      not null,
+    stack_trace     text      not null,
+    error_message   text      not null,
+    debug_message   text,
+    timestamp       timestamp not null,
     -- Audit columns
-    created_dt          timestamp not null default now(),
-    created_by          text      not null,
-    updated_dt          timestamp not null default now(),
-    updated_by          text      not null
+    created_dt      timestamp not null default now(),
+    created_by      text      not null,
+    updated_dt      timestamp not null default now(),
+    updated_by      text      not null
 );
 create index fk_error_log_1 on error_log (user_id);
 create index fk_error_log_2 on error_log (call_log_id);
