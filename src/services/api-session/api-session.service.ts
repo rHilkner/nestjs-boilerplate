@@ -58,23 +58,6 @@ export class ApiSessionService {
         return await this.apiSessionRepository.save(apiSession);
     }
 
-    validateApiSession(apiSession: ApiSession, shouldSessionExpire: boolean) {
-        if (!shouldSessionExpire) {
-            return;
-        }
-        if (apiSession.startDt.getTime() + this.sessionExpiration * 1000 < new Date().getTime()) {
-            this.logger.debug('Session expired, throwing exception');
-            throw ApiExceptions.UnauthorizedException(
-                'Session expired',
-                'Expired session token'
-            );
-        }
-    }
-
-    async deleteApiSession(apiSession: ApiSession) {
-        await this.apiSessionRepository.delete(apiSession.id);
-    }
-
     async invalidateApiSession(apiSession: ApiSession) {
         apiSession.active = false;
         await this.apiSessionRepository.save(apiSession);
