@@ -1,5 +1,5 @@
-import { UserDto } from './dto/user.dto';
-import { DbAuditable } from '../../common/db-auditable.abstract';
+import { UserDto } from './dtos/user.dto';
+import { DbAuditable } from '../../common/models/db-auditable-abstract.model';
 import { UserRole } from '../../common/enums/user-role';
 import { Column, Entity } from 'typeorm';
 

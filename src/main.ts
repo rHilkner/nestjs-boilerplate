@@ -8,6 +8,7 @@ import { ApiSessionService } from './services/api-session/api-session.service';
 import { ExceptionHandlerFilter } from './base/interceptors-n-filters/exception-handler-filter';
 import { RolesGuard } from './base/guards/roles.guard';
 import { ErrorLogService } from './services/error-log/error-log.service';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -19,6 +20,7 @@ async function bootstrap() {
 
     app.useGlobalGuards(new RolesGuard(new Reflector()));
     app.useGlobalFilters(new ExceptionHandlerFilter(errorLogService));
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
     app.useGlobalInterceptors(
         new AuthenticationInterceptor(apiSessionService, userService),
         new CallLogInterceptor(sysCallLogService)

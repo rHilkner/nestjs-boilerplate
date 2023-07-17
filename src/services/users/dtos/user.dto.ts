@@ -1,16 +1,16 @@
 import { User } from '../user.model';
-import { IsEmail, IsEnum, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { UserRole } from '../../../common/enums/user-role';
+import { IUserDto } from '../../../../shared/dtos';
 
-export class UserDto {
-  @IsNotEmpty()
+export class UserDto implements IUserDto {
   id: string;
 
-  @IsNotEmpty()
+  @IsString()
   @IsEmail()
   email: string;
 
-  @IsNotEmpty()
+  @IsString()
   @MinLength(8)
   password: string;
 

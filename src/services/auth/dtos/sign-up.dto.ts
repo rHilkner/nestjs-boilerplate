@@ -1,6 +1,7 @@
 import { IsEmail, MinLength } from 'class-validator';
+import { ISignUpDto } from '../../../../shared/dtos';
 
-export class SignUpDto {
+export class SignUpDto implements ISignUpDto {
     @IsEmail()
     email: string;
     @MinLength(8)

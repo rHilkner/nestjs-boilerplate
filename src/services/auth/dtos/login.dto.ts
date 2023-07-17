@@ -1,6 +1,7 @@
 import { IsEmail } from 'class-validator';
+import { ILoginDto } from '../../../../shared/dtos';
 
-export class LoginDto {
+export class LoginDto implements ILoginDto {
     @IsEmail()
     email: string;
     password: string;

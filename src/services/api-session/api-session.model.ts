@@ -1,4 +1,4 @@
-import { DbAuditable } from '../../common/db-auditable.abstract';
+import { DbAuditable } from '../../common/models/db-auditable-abstract.model';
 import { Column, Entity } from 'typeorm';
 import { User } from '../users/user.model';
 

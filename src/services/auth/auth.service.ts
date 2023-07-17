@@ -5,8 +5,8 @@ import { ApiExceptions } from '../../common/exceptions/api-exceptions';
 import { ApiSessionService } from '../api-session/api-session.service';
 import { UserService } from '../users/user.service';
 import { REQUEST } from '@nestjs/core';
-import { SignUpDto } from './dto/sign-up.dto';
-import { LoginDto } from './dto/login.dto';
+import { SignUpDto } from './dtos/sign-up.dto';
+import { LoginDto } from './dtos/login.dto';
 import { UserRole } from '../../common/enums/user-role';
 import { compare } from '../../common/libs/encrypt.util';
 
