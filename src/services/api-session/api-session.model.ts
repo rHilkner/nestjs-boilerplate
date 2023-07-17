@@ -11,6 +11,10 @@ export class ApiSession extends DbAuditable {
     @Column()
     refreshToken: string;
     @Column()
+    accessTokenExpDt: Date;
+    @Column()
+    refreshTokenExpDt: Date;
+    @Column()
     ipAddress: string;
     @Column()
     startDt: Date;
@@ -28,6 +32,8 @@ export class ApiSession extends DbAuditable {
             refreshToken: string,
             ipAddress: string,
             lastActivityDt?: Date,
+            accessTokenExpDt: Date,
+            refreshTokenExpDt: Date,
             currentUserId?: string,
         },
     ) {
@@ -39,29 +45,41 @@ export class ApiSession extends DbAuditable {
         this.ipAddress = props.ipAddress;
         this.startDt = currentDate;
         this.lastActivityDt = props.lastActivityDt ?? currentDate;
+        this.accessTokenExpDt = props.accessTokenExpDt;
+        this.refreshTokenExpDt = props.refreshTokenExpDt;
         this.active = true;
     }
 
     update(
         props: {
             ipAddress?: string,
-            lastActivityDt?: Date,
-            currentUserId?: string,
             active?: boolean,
+            accessToken?: string,
+            accessTokenExpDt?: Date,
             refreshToken?: string,
+            refreshTokenExpDt?: Date,
+            currentUserId?: string,
         },
     ) {
         super.updateDbAuditable({ currentUserId: props.currentUserId });
-        const currentDate = new Date();
-        this.lastActivityDt = props.lastActivityDt ?? currentDate;
-        if (!!props.ipAddress) {
+        if (props.ipAddress !== undefined) {
             this.ipAddress = props.ipAddress;
         }
-        if (!!props.refreshToken) {
-            this.refreshToken = props.refreshToken;
-        }
-        if (!!props.active) {
+        if (props.active !== undefined) {
             this.active = props.active;
         }
+        if (props.accessToken !== undefined) {
+            this.accessToken = props.accessToken;
+        }
+        if (props.accessTokenExpDt !== undefined) {
+            this.accessTokenExpDt = props.accessTokenExpDt;
+        }
+        if (props.refreshToken !== undefined) {
+            this.refreshToken = props.refreshToken;
+        }
+        if (props.refreshTokenExpDt !== undefined) {
+            this.refreshTokenExpDt = props.refreshTokenExpDt;
+        }
+        this.lastActivityDt = new Date();
     }
 }

@@ -20,21 +20,25 @@ create index ix_app_user_1 on app_user (email);
 drop table api_session;
 create table api_session
 (
-    id               uuid               default gen_random_uuid()
+    id                   uuid               default gen_random_uuid()
         constraint pk_api_session primary key,
-    user_id          uuid      not null, -- fk
-    token            text      not null,
-    ip_address       text,
-    start_dt         timestamp not null,
-    last_activity_dt timestamp not null,
-    active           boolean   not null,
+    user_id              uuid      not null, -- fk
+    access_token         text      not null,
+    access_token_exp_dt  timestamp not null,
+    refresh_token        text      not null,
+    refresh_token_exp_dt timestamp not null,
+    ip_address           text,
+    start_dt             timestamp not null,
+    last_activity_dt     timestamp not null,
+    active               boolean   not null,
     -- Audit columns
-    created_dt       timestamp not null default now(),
-    created_by       text      not null,
-    updated_dt       timestamp not null default now(),
-    updated_by       text      not null
+    created_dt           timestamp not null default now(),
+    created_by           text      not null,
+    updated_dt           timestamp not null default now(),
+    updated_by           text      not null
 );
-create index ix_api_session_1 on api_session (token);
+create index ix_api_session_1 on api_session (access_token);
+create index ix_api_session_2 on api_session (refresh_token);
 
 drop table call_log;
 create table call_log

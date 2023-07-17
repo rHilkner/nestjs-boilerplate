@@ -1,41 +1,36 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { ApiSession } from './api-session.model';
 import { User } from '../users/user.model';
 import { ApiExceptions } from '../../common/exceptions/api-exceptions';
 import { Repository } from 'typeorm';
+import { generateRandomString } from '../../common/libs/encrypt.util';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ApiSessionService {
 
     private readonly logger = new Logger(ApiSessionService.name);
-    private readonly sessionTokenLength = 72;
-    private readonly sessionExpiration = 60 * 60 * 24 * 30; // 30 days
+    private readonly sessionTokenLength = this.configService.get<number>('SESSION_TOKEN_LENGTH');
+    private readonly accessTokenExpirationSeconds = this.configService.get<number>('ACCESS_TOKEN_EXPIRATION_SECONDS');
+    private readonly refreshTokenExpirationSeconds = this.configService.get<number>('REFRESH_TOKEN_EXPIRATION_SECONDS');
 
     constructor(
         @InjectRepository(ApiSession)
         private apiSessionRepository: Repository<ApiSession>,
+        private readonly configService: ConfigService,
     ) {}
-
-    generateNewSessionToken(): string {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result = '';
-        let counter = 0;
-        while (counter < this.sessionTokenLength) {
-            result += characters.charAt(Math.floor(Math.random() * characters.length));
-            counter += 1;
-        }
-        return result;
-    }
 
     async createAndSaveApiSession(user: User): Promise<ApiSession> {
         this.logger.debug(`Creating new API session for user: ${user.email}`);
+        const currentDtMillis = new Date().getTime();
         const newApiSession = new ApiSession({
             userId: user.id,
             accessToken: this.generateNewSessionToken(),
             refreshToken: this.generateNewSessionToken(),
             ipAddress: user.lastAccessIp,
+            accessTokenExpDt: new Date(currentDtMillis + this.accessTokenExpirationSeconds * 1000),
+            refreshTokenExpDt: new Date(currentDtMillis + this.refreshTokenExpirationSeconds * 1000),
         });
         return await this.apiSessionRepository.save(newApiSession);
     }
@@ -48,7 +43,7 @@ export class ApiSessionService {
                 'Invalid authorization token',
                 `Invalid authorization token ${accessToken}`
             );
-        } else if (apiSession.startDt.getTime() + this.sessionExpiration * 1000 < new Date().getTime()) {
+        } else if (apiSession.startDt.getTime() + this.accessTokenExpirationSeconds * 1000 < new Date().getTime()) {
             this.logger.error(`Authorization token revoked: ${accessToken}`);
             throw ApiExceptions.BadRequestException(
                 'Authorization token revoked',
@@ -59,14 +54,26 @@ export class ApiSessionService {
         return await this.apiSessionRepository.save(apiSession);
     }
 
-    async renewAccessToken(apiSession: ApiSession): Promise<ApiSession> {
+    /**
+     * Refreshes the access and refresh tokens for the given API session
+     * @param apiSession
+     */
+    async refreshTokens(apiSession: ApiSession): Promise<ApiSession> {
+        const currentDate = new Date();
         apiSession.accessToken = this.generateNewSessionToken();
-        apiSession.lastActivityDt = new Date();
+        apiSession.refreshToken = this.generateNewSessionToken();
+        apiSession.accessTokenExpDt = new Date(currentDate.getTime() + this.accessTokenExpirationSeconds * 1000);
+        apiSession.refreshTokenExpDt = new Date(currentDate.getTime() + this.refreshTokenExpirationSeconds * 1000);
+        apiSession.lastActivityDt = currentDate;
         return await this.apiSessionRepository.save(apiSession);
     }
 
     async invalidateApiSession(apiSession: ApiSession) {
         apiSession.active = false;
         await this.apiSessionRepository.save(apiSession);
+    }
+
+    private generateNewSessionToken(): string {
+        return generateRandomString(this.sessionTokenLength);
     }
 }

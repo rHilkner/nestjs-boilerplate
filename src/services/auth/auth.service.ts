@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiSession } from '../api-session/api-session.model';
 import { ApiExceptions } from '../../common/exceptions/api-exceptions';
@@ -13,8 +13,8 @@ import { compare } from '../../common/libs/encrypt.util';
 @Injectable()
 export class AuthService {
     private readonly logger = new Logger(AuthService.name);
-    private readonly shouldSessionExpire: boolean;
-    private readonly sessionExpiresIn: number;
+    private readonly shouldSessionExpire: boolean = this.configService.get<boolean>('app-env.auth.should-session-expire');
+    private readonly sessionExpiresIn: number = this.configService.get<number>('app-env.auth.session-expires-in');
 
     constructor(
         @Inject(REQUEST) private readonly request: any,
@@ -64,5 +64,10 @@ export class AuthService {
     async signOut(): Promise<void> {
         const apiSession = await this.request.apiSession;
         await this.apiSessionService.invalidateApiSession(apiSession);
+    }
+
+    async refreshTokens(): Promise<ApiSession> {
+        const apiSession = await this.request.apiSession;
+        return await this.apiSessionService.refreshTokens(apiSession);
     }
 }
