@@ -31,7 +31,7 @@ NestJS boilerplate
 - `/auth/login` - logs user in with email and password
 - `/auth/logout` - logs user out with Bearer token in the request header
 - `/user/current` - CUSTOMER or ADMIN only, get current user from Bearer token in the request header
-- `/user/all` - ADMIN only, gets all users
+- `/user/all` - ADMIN only, gets all users using pagination
 - `/user/create` - ADMIN only, creates user from email, role and password
 - `/user/update` - ADMIN only, updates user email, role and password
 - `/currencies/currentPrice?from=USD&to=BRL` - CUSTOMER or ADMIN only, cached with TTL of 1 hour, no DB call, calls external API to get current price of currency pair

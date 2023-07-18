@@ -51,8 +51,8 @@ export class UserService {
         return await this.userRepository.save(user);
     }
 
-    async getAllUsers(): Promise<User[]> {
-        return await this.userRepository.find();
+    async getAllUsers(page: number, limit: number): Promise<User[]> {
+        return await this.userRepository.find({ skip: page * limit, take: limit });
     }
 
     async getCurrentUser(): Promise<User> {

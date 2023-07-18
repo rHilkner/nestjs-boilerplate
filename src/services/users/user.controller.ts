@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -13,8 +13,8 @@ export class UserController {
 
     @Roles(UserRole.ADMIN)
     @Get('all')
-    async getAll(): Promise<UserDto[]> {
-        const users = await this.userService.getAllUsers();
+    async getAll(@Query() page: number, @Query() limit: number): Promise<UserDto[]> {
+        const users = await this.userService.getAllUsers(page, limit);
         return users.map(user => user.toDto());
     }
 
