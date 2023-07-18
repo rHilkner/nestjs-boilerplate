@@ -6,6 +6,7 @@ import { REQUEST } from '@nestjs/core';
 import { UserRole } from '../../common/enums/user-role';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { encrypt } from '../../common/libs/encrypt.util';
+import { ApiExceptions } from '../../common/exceptions/api-exceptions';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,10 @@ export class UserService {
     }
 
     async createUser(email: string, password: string, role: UserRole): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { email, role } });
+        if (user) {
+            throw ApiExceptions.ForbiddenException('User already exists', `User with email ${email} and role ${role} already exists`);
+        }
         const newUser = new User({
             email,
             passwordHash: await encrypt(password),
@@ -34,10 +39,10 @@ export class UserService {
     }
 
     async updateUser(dto: UpdateUserDto): Promise<User> {
-        if (this.request.user.role !== UserRole.ADMIN && this.request.user.id !== dto.id) {
-            throw new Error('You are not allowed to update this user');
+        const user = await this.userRepository.findOne({ where: { email: dto.email, role: dto.role } });
+        if (this.request.user.role !== UserRole.ADMIN && this.request.user.id !== user.id) {
+            throw ApiExceptions.ForbiddenException(`You are not allowed to update this user`, `You are not allowed to update this user`);
         }
-        const user = await this.userRepository.findOne({ where: { id: dto.id } });
         user.update({
             email: dto.email,
             role: dto.role,
