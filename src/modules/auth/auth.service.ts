@@ -8,14 +8,14 @@ import { LoginDto } from './dtos/login.dto'
 import { UserRole } from '../../../shared/enums'
 import { compare } from '../../common/libs/encrypt.util'
 import { SignUpDto } from './dtos/sign-up.dto'
-import { RequestDetails } from '../../common/interfaces/request-details'
+import { RequestContext } from '../../common/interfaces/request-context'
 
 @Injectable()
 export class AuthService {
     private readonly logger = new Logger(AuthService.name);
 
     constructor(
-        @Inject(REQUEST) private readonly request: RequestDetails,
+        @Inject(REQUEST) private readonly request: RequestContext,
         private readonly apiSessionService: ApiSessionService,
         private readonly userService: UserService,
     ) {}

@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, SetMetadata, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '../../../shared/enums';
-import { RequestDetails } from '../../common/interfaces/request-details';
+import { RequestContext } from '../../common/interfaces/request-context';
 
 /**
  * Custom decorator to specify roles required to access a route.
@@ -25,7 +25,7 @@ export class AuthorizationGuard implements CanActivate {
         }
 
         // Safely cast the request to RequestDetails that was bound on the AuthenticationInterceptor
-        const request = context.switchToHttp().getRequest<RequestDetails>();
+        const request = context.switchToHttp().getRequest<RequestContext>();
         const user = request.user;
 
         if (!user) {

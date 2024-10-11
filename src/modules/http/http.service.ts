@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { CallLog } from '../call-log/call-log.model';
 import { CallType } from '../../common/enums/call-type';
 import { CallLogService } from '../call-log/call-log.service';
-import { RequestDetails } from '../../common/interfaces/request-details'
+import { RequestContext } from '../../common/interfaces/request-context'
 import { REQUEST } from '@nestjs/core'
 
 @Injectable()
@@ -11,7 +11,7 @@ export class HttpService {
 
     constructor(
         private readonly callLogService: CallLogService,
-        @Inject(REQUEST) private readonly request: RequestDetails,
+        @Inject(REQUEST) private readonly request: RequestContext,
     ) {}
 
     async get(url: string, options?: AxiosRequestConfig): Promise<AxiosResponse<any, any>> {

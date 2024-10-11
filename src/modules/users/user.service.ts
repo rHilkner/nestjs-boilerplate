@@ -7,14 +7,14 @@ import { UserRole } from '../../../shared/enums';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { encrypt } from '../../common/libs/encrypt.util';
 import { ApiExceptions } from '../../common/exceptions/api-exceptions';
-import { RequestDetails } from '../../common/interfaces/request-details'
+import { RequestContext } from '../../common/interfaces/request-context'
 
 @Injectable()
 export class UserService {
 
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
-        @Inject(REQUEST) private readonly request: RequestDetails,
+        @Inject(REQUEST) private readonly request: RequestContext,
     ) {}
 
     async getUserById(userId: string): Promise<User | null> {

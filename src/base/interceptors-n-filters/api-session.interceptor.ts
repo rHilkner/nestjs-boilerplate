@@ -3,7 +3,7 @@ import { Observable } from 'rxjs'
 import { UserService } from '../../modules/users/user.service'
 import { ApiSessionService } from '../../modules/api-session/api-session.service'
 import { uuid } from 'uuidv4'
-import { RequestDetails } from '../../common/interfaces/request-details'
+import { RequestContext } from '../../common/interfaces/request-context'
 
 @Injectable()
 export class ApiSessionInterceptor implements NestInterceptor {
@@ -13,7 +13,7 @@ export class ApiSessionInterceptor implements NestInterceptor {
     ) {}
 
     async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
-        const request = context.switchToHttp().getRequest<RequestDetails>();
+        const request = context.switchToHttp().getRequest<RequestContext>();
 
         const bearerToken = request.headers.authorization?.split(' ')[1];
 

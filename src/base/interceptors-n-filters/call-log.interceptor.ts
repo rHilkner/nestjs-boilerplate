@@ -4,14 +4,14 @@ import { tap } from 'rxjs/operators';
 import { CallLogService } from '../../modules/call-log/call-log.service';
 import { CallLog } from '../../modules/call-log/call-log.model';
 import { CallType } from '../../common/enums/call-type';
-import { RequestDetails } from '../../common/interfaces/request-details'
+import { RequestContext } from '../../common/interfaces/request-context'
 
 @Injectable()
 export class CallLogInterceptor implements NestInterceptor {
     constructor(private readonly callLogService: CallLogService) {}
 
     async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
-        const request: RequestDetails = context.switchToHttp().getRequest();
+        const request: RequestContext = context.switchToHttp().getRequest();
         const response: {
             statusCode: number;
             getHeaders: () => any;
