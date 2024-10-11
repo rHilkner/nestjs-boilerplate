@@ -2,8 +2,8 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable } from 'rxjs'
 import { UserService } from '../../modules/users/user.service'
 import { ApiSessionService } from '../../modules/api-session/api-session.service'
-import { uuid } from 'uuidv4'
 import { RequestContext } from '../../common/types/request-context'
+import { ulid } from 'ulid'
 
 @Injectable()
 export class ApiSessionInterceptor implements NestInterceptor {
@@ -18,7 +18,7 @@ export class ApiSessionInterceptor implements NestInterceptor {
         const bearerToken = request.headers.authorization?.split(' ')[1];
 
         if (bearerToken) {
-            request.requestId = uuid();
+            request.requestId = ulid();
             const apiSession = await this.apiSessionService.getActiveApiSession(bearerToken);
             request.apiSession = apiSession;
             const user = await this.userService.getUserById(apiSession.userId);
