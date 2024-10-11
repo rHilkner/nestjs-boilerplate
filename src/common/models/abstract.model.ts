@@ -1,5 +1,5 @@
-import { ulid } from 'ulid';
+import { ulid } from 'ulid'
 
 export abstract class AbstractModel {
-    id: string = ulid();
+  id: string = ulid()
 }
