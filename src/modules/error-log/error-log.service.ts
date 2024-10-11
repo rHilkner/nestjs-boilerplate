@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ErrorLog } from './error-log.model';
 import { Repository } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
-import { RequestContext } from '../../common/interfaces/request-context'
+import { RequestContext } from '../../common/types/request-context'
 
 @Injectable()
 export class ErrorLogService {

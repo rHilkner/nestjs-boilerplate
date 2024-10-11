@@ -3,7 +3,7 @@ import { Observable } from 'rxjs'
 import { UserService } from '../../modules/users/user.service'
 import { ApiSessionService } from '../../modules/api-session/api-session.service'
 import { uuid } from 'uuidv4'
-import { RequestContext } from '../../common/interfaces/request-context'
+import { RequestContext } from '../../common/types/request-context'
 
 @Injectable()
 export class ApiSessionInterceptor implements NestInterceptor {

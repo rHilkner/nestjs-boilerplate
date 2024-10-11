@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, SetMetadata, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '../../../shared/enums';
-import { RequestContext } from '../../common/interfaces/request-context';
+import { RequestContext } from '../../common/types/request-context';
 
 /**
  * Custom decorator to specify roles required to access a route.

@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { CallLog } from '../call-log/call-log.model';
 import { CallType } from '../../common/enums/call-type';
 import { CallLogService } from '../call-log/call-log.service';
-import { RequestContext } from '../../common/interfaces/request-context'
+import { RequestContext } from '../../common/types/request-context'
 import { REQUEST } from '@nestjs/core'
 
 @Injectable()

@@ -4,7 +4,7 @@ import { tap } from 'rxjs/operators';
 import { CallLogService } from '../../modules/call-log/call-log.service';
 import { CallLog } from '../../modules/call-log/call-log.model';
 import { CallType } from '../../common/enums/call-type';
-import { RequestContext } from '../../common/interfaces/request-context'
+import { RequestContext } from '../../common/types/request-context'
 
 @Injectable()
 export class CallLogInterceptor implements NestInterceptor {

@@ -7,7 +7,7 @@ import { UserRole } from '../../../shared/enums';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { encrypt } from '../../common/libs/encrypt.util';
 import { ApiExceptions } from '../../common/exceptions/api-exceptions';
-import { RequestContext } from '../../common/interfaces/request-context'
+import { RequestContext } from '../../common/types/request-context'
 
 @Injectable()
 export class UserService {

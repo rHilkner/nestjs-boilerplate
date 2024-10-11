@@ -8,7 +8,7 @@ import { LoginDto } from './dtos/login.dto'
 import { UserRole } from '../../../shared/enums'
 import { compare } from '../../common/libs/encrypt.util'
 import { SignUpDto } from './dtos/sign-up.dto'
-import { RequestContext } from '../../common/interfaces/request-context'
+import { RequestContext } from '../../common/types/request-context'
 
 @Injectable()
 export class AuthService {
