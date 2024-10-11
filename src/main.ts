@@ -9,6 +9,9 @@ import { ExceptionHandlerFilter } from './base/interceptors-n-filters/exception-
 import { AuthorizationGuard } from './base/guards/authorization.guard';
 import { ErrorLogService } from './modules/error-log/error-log.service';
 import { ValidationPipe } from '@nestjs/common';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
