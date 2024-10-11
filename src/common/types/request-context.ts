@@ -2,7 +2,7 @@ import { User } from '../../modules/users/user.model'
 import { ApiSession } from '../../modules/api-session/api-session.model'
 
 export interface RequestContext {
-  transactionId: string
+  requestId: string
   user: User
   apiSession: ApiSession
   method: string

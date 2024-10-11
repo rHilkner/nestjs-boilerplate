@@ -18,7 +18,7 @@ export class HttpService {
         const response = await axios.get(url, { timeout: 5000, ...options });
         await this.callLogService.save(
             new CallLog({
-                transactionId: this.request.transactionId,
+                requestId: this.request.requestId,
                 userId: this.request.user?.id,
                 sessionId: this.request.apiSession?.id,
                 type: CallType.INCOMING,

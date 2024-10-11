@@ -6,7 +6,7 @@ export class ErrorLog extends DbAuditable {
     @Column()
     userId: string;
     @Column()
-    transactionId: string;
+    requestId: string;
     @Column()
     httpStatus: number;
     @Column()
@@ -23,7 +23,7 @@ export class ErrorLog extends DbAuditable {
     constructor(
         props: {
             userId: string,
-            transactionId: string,
+            requestId: string,
             httpStatus: number,
             exceptionClass: string,
             stackTrace: string,
@@ -35,7 +35,7 @@ export class ErrorLog extends DbAuditable {
     ) {
         super({ currentUserId: props.currentUserId });
         this.userId = props.userId;
-        this.transactionId = props.transactionId;
+        this.requestId = props.requestId;
         this.httpStatus = props.httpStatus;
         this.exceptionClass = props.exceptionClass;
         this.stackTrace = props.stackTrace;

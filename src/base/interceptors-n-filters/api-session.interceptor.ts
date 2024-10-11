@@ -18,7 +18,7 @@ export class ApiSessionInterceptor implements NestInterceptor {
         const bearerToken = request.headers.authorization?.split(' ')[1];
 
         if (bearerToken) {
-            request.transactionId = uuid();
+            request.requestId = uuid();
             const apiSession = await this.apiSessionService.getActiveApiSession(bearerToken);
             request.apiSession = apiSession;
             const user = await this.userService.getUserById(apiSession.userId);

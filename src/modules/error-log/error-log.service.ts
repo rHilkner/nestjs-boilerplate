@@ -18,7 +18,7 @@ export class ErrorLogService {
     saveException(exception: ApiException) {
         const errorLog = new ErrorLog({
             userId: this.request?.user?.id ?? '',
-            transactionId: this.request?.transactionId ?? '',
+            requestId: this.request?.requestId ?? '',
             httpStatus: exception.httpStatus,
             exceptionClass: exception.name,
             stackTrace: exception.stack,

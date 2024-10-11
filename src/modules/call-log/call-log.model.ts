@@ -5,7 +5,7 @@ import { CallType } from '../../common/enums/call-type';
 @Entity({ name: 'call_log' })
 export class CallLog extends DbAuditable {
     @Column()
-    transactionId: string;
+    requestId: string;
     @Column()
     userId: string;
     @Column()
@@ -39,7 +39,7 @@ export class CallLog extends DbAuditable {
 
     constructor(
         props: {
-            transactionId: string,
+            requestId: string,
             userId: string,
             sessionId: string,
             type: CallType,
@@ -60,7 +60,7 @@ export class CallLog extends DbAuditable {
     ) {
         super({ currentUserId: props.currentUserId });
         const currentDate = new Date();
-        this.transactionId = props.transactionId;
+        this.requestId = props.requestId;
         this.userId = props.userId;
         this.sessionId = props.sessionId;
         this.type = props.type;
