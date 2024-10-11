@@ -1,11 +1,11 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './modules/app/app.module';
-import { ApiSessionInterceptor } from './base/interceptors-n-filters/api-session.interceptor';
+import { ApiSessionInterceptor } from './base/interceptors/api-session.interceptor';
 import { CallLogService } from './modules/call-log/call-log.service';
 import { UserService } from './modules/users/user.service';
-import { CallLogInterceptor } from './base/interceptors-n-filters/call-log.interceptor';
+import { CallLogInterceptor } from './base/interceptors/call-log.interceptor';
 import { ApiSessionService } from './modules/api-session/api-session.service';
-import { ExceptionHandlerFilter } from './base/interceptors-n-filters/exception-handler-filter';
+import { ExceptionHandlerFilter } from './base/interceptors/exception-handler-filter';
 import { AuthorizationGuard } from './base/guards/authorization.guard';
 import { ErrorLogService } from './modules/error-log/error-log.service';
 import { ValidationPipe } from '@nestjs/common';
