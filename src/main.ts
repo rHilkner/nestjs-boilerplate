@@ -1,5 +1,5 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './modules/app/app.module';
 import { AuthenticationInterceptor } from './base/interceptors-n-filters/authentication.interceptor';
 import { CallLogService } from './services/call-log/call-log.service';
 import { UserService } from './services/users/user.service';
