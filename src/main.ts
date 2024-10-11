@@ -10,11 +10,16 @@ import { AuthorizationGuard } from './base/guards/authorization.guard';
 import { ErrorLogService } from './modules/error-log/error-log.service';
 import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify'
 
 dotenv.config();
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create<NestFastifyApplication>(
+      AppModule,
+      new FastifyAdapter(),
+    );
+    app.enableCors();
 
     const apiSessionService = app.get(ApiSessionService);
     const sysCallLogService = app.get(CallLogService);
