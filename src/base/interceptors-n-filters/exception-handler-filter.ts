@@ -21,7 +21,7 @@ export class ExceptionHandlerFilter extends BaseExceptionFilter {
         const request = ctx.getRequest<Request>();
         const status = exception.getStatus();
 
-        type ErrorDto = {
+        interface ErrorDto {
             errorCode: string,
             httpStatus: number,
             appErrorMessage: string,

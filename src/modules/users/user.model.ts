@@ -2,6 +2,7 @@ import { UserDto } from './dtos/user.dto';
 import { DbAuditable } from '../../common/models/db-auditable-abstract.model';
 import { UserRole } from '../../common/enums/user-role';
 import { Column, Entity } from 'typeorm';
+import { UserDtoSchema } from '../../../shared/dtos'
 
 @Entity({ name: 'app_user' })
 export class User extends DbAuditable {
@@ -41,6 +42,15 @@ export class User extends DbAuditable {
     }
 
     toDto(): UserDto {
-        return UserDto.fromModel(this);
+      //TODO
+      return UserDtoSchema.parse({
+          id: this.id,
+          email: this.email,
+          role: this.role,
+          createdDate: this.createdDt,
+          createdBy: this.createdBy,
+          updatedDate: this.updatedDt,
+          updatedBy: this.updatedBy,
+      });
     }
 }

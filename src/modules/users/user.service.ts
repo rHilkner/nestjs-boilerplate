@@ -16,11 +16,11 @@ export class UserService {
         @Inject(REQUEST) private readonly request: any,
     ) {}
 
-    async getUserById(userId: string): Promise<User> {
+    async getUserById(userId: string): Promise<User | null> {
         return await this.userRepository.findOne({ where: { id: userId } });
     }
 
-    async findByEmail(email: string): Promise<User> {
+    async findByEmail(email: string): Promise<User | null> {
         return await this.userRepository.findOne({ where: { email } });
     }
 
@@ -33,7 +33,7 @@ export class UserService {
             email,
             passwordHash: await encrypt(password),
             role,
-            currentUserId: this.request.user?.id as string | undefined,
+            currentUserId: this.request.user?.id,
         });
         return await this.userRepository.save(newUser);
     }
@@ -55,7 +55,7 @@ export class UserService {
         return await this.userRepository.find({ skip: page * limit, take: limit });
     }
 
-    async getCurrentUser(): Promise<User> {
+    async getCurrentUser(): Promise<User | null> {
         return await this.userRepository.findOne({ where: { id: this.request.user?.id } });
     }
 
