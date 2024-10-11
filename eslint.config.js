@@ -1,26 +1,40 @@
-module.exports = {
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: 'tsconfig.json',
-    tsconfigRootDir: __dirname,
-    sourceType: 'module',
+const eslint = require('@eslint/js');
+const globals = require('globals');
+
+const tseslint = require('typescript-eslint');
+
+const eslintConfigPrettier = require('eslint-config-prettier');
+
+module.exports = [
+  {
+    ignores: ['**/eslint.config.js'],
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-  ],
-  root: true,
-  env: {
-    node: true,
-    jest: true,
+
+  eslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.stylisticTypeChecked,
+  eslintConfigPrettier,
+
+  {
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+
+      parser: tseslint.parser,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: __dirname,
+      },
+    },
+    // Rules
+    rules: {
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/interface-name-prefix': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   },
-  ignorePatterns: ['eslint.config.js'],
-  rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-    'prettier/prettier': ['off', { singleQuote: true }],
-  },
-};
+];
+
