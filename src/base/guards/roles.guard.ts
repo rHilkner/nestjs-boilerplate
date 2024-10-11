@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from '../../common/enums/user-role';
+import { UserRole } from '../../../shared/enums';
 import { User } from '../../modules/users/user.model';
 import { RequestDetails } from '../../common/interfaces/request-details'
 

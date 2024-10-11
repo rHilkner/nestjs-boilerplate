@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { LoginDto } from './dtos/login.dto';
 import { Roles } from '../../base/guards/roles.guard';
-import { UserRole } from '../../common/enums/user-role';
+import { UserRole } from '../../../shared/enums';
 
 @Controller('auth')
 export class AuthController {

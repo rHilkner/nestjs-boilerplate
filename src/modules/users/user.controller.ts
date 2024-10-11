@@ -4,7 +4,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
 import { Roles } from '../../base/guards/roles.guard';
-import { UserRole } from '../../common/enums/user-role';
+import { UserRole } from '../../../shared/enums';
 
 @Controller('users')
 export class UserController {

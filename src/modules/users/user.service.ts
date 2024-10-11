@@ -3,7 +3,7 @@ import { User } from './user.model';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { REQUEST } from '@nestjs/core';
-import { UserRole } from '../../common/enums/user-role';
+import { UserRole } from '../../../shared/enums';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { encrypt } from '../../common/libs/encrypt.util';
 import { ApiExceptions } from '../../common/exceptions/api-exceptions';

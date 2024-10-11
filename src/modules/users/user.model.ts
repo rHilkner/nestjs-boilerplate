@@ -1,6 +1,6 @@
 import { UserDto } from './dtos/user.dto';
 import { DbAuditable } from '../../common/models/db-auditable-abstract.model';
-import { UserRole } from '../../common/enums/user-role';
+import { UserRole } from '../../../shared/enums';
 import { Column, Entity } from 'typeorm';
 import { UserDtoSchema } from '../../../shared/dtos'
 
