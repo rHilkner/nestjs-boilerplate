@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from '../../common/enums/user-role';
-import { User } from '../../services/users/user.model';
+import { User } from '../../modules/users/user.model';
 
 export const Roles = (...roles: UserRole[]) => SetMetadata('roles', roles);
 

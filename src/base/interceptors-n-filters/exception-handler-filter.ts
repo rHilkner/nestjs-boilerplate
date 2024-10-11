@@ -2,7 +2,7 @@ import { ArgumentsHost, Catch, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { ApiException } from '../../common/exceptions/api-exception';
-import { ErrorLogService } from '../../services/error-log/error-log.service';
+import { ErrorLogService } from '../../modules/error-log/error-log.service';
 
 @Catch()
 export class ExceptionHandlerFilter extends BaseExceptionFilter {

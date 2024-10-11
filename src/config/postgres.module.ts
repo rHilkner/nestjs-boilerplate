@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CallLog } from '../services/call-log/call-log.model';
-import { ErrorLog } from '../services/error-log/error-log.model';
-import { ApiSession } from '../services/api-session/api-session.model';
-import { User } from '../services/users/user.model';
+import { CallLog } from '../modules/call-log/call-log.model';
+import { ErrorLog } from '../modules/error-log/error-log.model';
+import { ApiSession } from '../modules/api-session/api-session.model';
+import { User } from '../modules/users/user.model';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { env_vars } from '../base/env_vars';
 

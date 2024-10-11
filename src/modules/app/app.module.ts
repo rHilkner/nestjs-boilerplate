@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './services/users/user.module';
-import { CurrenciesModule } from './services/currencies/currencies.module';
-import { ErrorLogModule } from './services/error-log/error-log.module';
-import { CallLogModule } from './services/call-log/call-log.module';
-import { ApiSessionModule } from './services/api-session/api-session.module';
+import { UserModule } from './modules/users/user.module';
+import { CurrenciesModule } from './modules/currencies/currencies.module';
+import { ErrorLogModule } from './modules/error-log/error-log.module';
+import { CallLogModule } from './modules/call-log/call-log.module';
+import { ApiSessionModule } from './modules/api-session/api-session.module';
 import { PostgresModule } from '../../config/postgres.module';
-import { AuthModule } from './services/auth/auth.module';
-import { HttpModule } from './services/http/http.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { HttpModule } from './modules/http/http.module';
 
 @Module({
     imports: [

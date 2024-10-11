@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { UserService } from '../../services/users/user.service';
-import { ApiSessionService } from '../../services/api-session/api-session.service';
+import { UserService } from '../../modules/users/user.service';
+import { ApiSessionService } from '../../modules/api-session/api-session.service';
 import { uuid } from 'uuidv4';
 
 @Injectable()

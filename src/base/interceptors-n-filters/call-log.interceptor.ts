@@ -1,8 +1,8 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { CallLogService } from '../../services/call-log/call-log.service';
-import { CallLog } from '../../services/call-log/call-log.model';
+import { CallLogService } from '../../modules/call-log/call-log.service';
+import { CallLog } from '../../modules/call-log/call-log.model';
 import { CallType } from '../../common/enums/call-type';
 
 @Injectable()
