@@ -7,9 +7,9 @@ export class CallLog extends DbAuditable {
     @Column()
     requestId: string;
     @Column()
-    userId: string;
+    userId?: string;
     @Column()
-    sessionId: string;
+    sessionId?: string;
     @Column()
     type: CallType;
     @Column()
@@ -40,8 +40,8 @@ export class CallLog extends DbAuditable {
     constructor(
         props: {
             requestId: string,
-            userId: string,
-            sessionId: string,
+            userId?: string,
+            sessionId?: string,
             type: CallType,
             url: string,
             ip: string,
@@ -55,7 +55,7 @@ export class CallLog extends DbAuditable {
             responseHeaders?: string,
             startDt?: Date,
             endDt?: Date,
-            currentUserId: string,
+            currentUserId?: string,
         },
     ) {
         super({ currentUserId: props.currentUserId });
@@ -84,7 +84,7 @@ export class CallLog extends DbAuditable {
             responseBody?: string,
             responseHeaders?: string,
             endDt?: Date,
-            currentUserId: string,
+            currentUserId?: string,
         },
     ) {
         super.updateDbAuditable({ currentUserId: props.currentUserId });

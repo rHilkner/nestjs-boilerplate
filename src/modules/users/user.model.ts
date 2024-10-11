@@ -33,7 +33,7 @@ export class User extends DbAuditable {
         props: {
             email: string,
             role: UserRole,
-            currentUserId: string,
+            currentUserId?: string,
         }
     ) {
         super.updateDbAuditable({ currentUserId: props.currentUserId })

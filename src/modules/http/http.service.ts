@@ -18,18 +18,18 @@ export class HttpService {
         const response = await axios.get(url, { timeout: 5000, ...options });
         await this.callLogService.save(
             new CallLog({
-                requestId: this.request.requestId,
-                userId: this.request.user?.id,
-                sessionId: this.request.apiSession?.id,
+                requestId: this.request.raw.requestId,
+                userId: this.request.raw.jwtData?.id,
+                sessionId: this.request.raw.apiSession?.id,
                 type: CallType.INCOMING,
                 url: url,
                 ip: 'localhost',
                 method: this.request.method,
-                endpoint: this.request.route.path,
+                endpoint: this.request.url,
                 parameters: JSON.stringify(this.request.params),
                 requestBody: JSON.stringify(this.request.body),
                 requestHeaders: JSON.stringify(this.request.headers),
-                currentUserId: this.request.user?.id,
+                currentUserId: this.request.raw.jwtData?.id,
             }),
         );
         return response;

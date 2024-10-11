@@ -19,18 +19,18 @@ export class CallLogInterceptor implements NestInterceptor {
 
         // Create CallLog object
         const sysCallLog = new CallLog({
-            requestId: request.requestId,
-            userId: request.user?.id,
-            sessionId: request.apiSession?.id,
+            requestId: request.raw.requestId,
+            userId: request.raw.jwtData?.id,
+            sessionId: request.raw.apiSession?.id,
             type: CallType.INCOMING,
             url: request.url,
             ip: request.ip,
             method: request.method,
-            endpoint: request.route.path,
+            endpoint: request.url,
             parameters: JSON.stringify(request.params),
             requestBody: JSON.stringify(request.body),
             requestHeaders: JSON.stringify(request.headers),
-            currentUserId: request.user?.id,
+            currentUserId: request.raw.jwtData?.id,
         });
 
         // Save to DB

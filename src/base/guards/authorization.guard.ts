@@ -26,7 +26,7 @@ export class AuthorizationGuard implements CanActivate {
 
         // Safely cast the request to RequestDetails that was bound on the AuthenticationInterceptor
         const request = context.switchToHttp().getRequest<RequestContext>();
-        const user = request.user;
+        const user = request.raw.jwtData;
 
         if (!user) {
             throw new UnauthorizedException('User is not authenticated');

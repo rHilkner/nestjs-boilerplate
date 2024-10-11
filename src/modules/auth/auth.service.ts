@@ -62,12 +62,25 @@ export class AuthService {
     }
 
     async signOut(): Promise<void> {
-        const apiSession = this.request.apiSession;
+        const apiSession = this.request.raw.apiSession;
+        if (apiSession == null) {
+            this.logger.warn('No API session found to sign out');
+            return;
+        }
         await this.apiSessionService.invalidateApiSession(apiSession);
+        this.logger.log(`Signed out API session [${apiSession.id}]`);
     }
 
     async refreshTokens(): Promise<ApiSession> {
-        const apiSession = this.request.apiSession;
-        return await this.apiSessionService.refreshTokens(apiSession);
+        const apiSession = this.request.raw.apiSession;
+        if (apiSession == null) {
+            throw ApiExceptions.UnauthorizedException(
+                'No API session found',
+                'No API session found to refresh tokens'
+            );
+        }
+        const newApiSession = await this.apiSessionService.refreshTokens(apiSession);
+        this.logger.log(`Refreshed tokens for API session [${apiSession.id}]`);
+        return newApiSession;
     }
 }

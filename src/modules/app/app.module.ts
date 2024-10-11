@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from '../users/user.module';
@@ -9,6 +9,7 @@ import { ApiSessionModule } from '../api-session/api-session.module';
 import { PostgresModule } from '../../config/postgres.module';
 import { AuthModule } from '../auth/auth.module';
 import { HttpModule } from '../http/http.module';
+import { RequestIdMiddleware } from '../../base/interceptors/request-id.middleware'
 
 @Module({
     imports: [
@@ -24,4 +25,10 @@ import { HttpModule } from '../http/http.module';
     controllers: [AppController],
     providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    public configure(consumer: MiddlewareConsumer): void {
+        consumer
+          .apply(RequestIdMiddleware)
+          .forRoutes('*', '/');
+    }
+}

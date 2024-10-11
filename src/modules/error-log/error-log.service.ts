@@ -17,15 +17,15 @@ export class ErrorLogService {
 
     saveException(exception: ApiException) {
         const errorLog = new ErrorLog({
-            userId: this.request?.user?.id ?? '',
-            requestId: this.request?.requestId ?? '',
+            userId: this.request?.raw.jwtData?.id ?? '',
+            requestId: this.request?.raw.requestId ?? '',
             httpStatus: exception.httpStatus,
             exceptionClass: exception.name,
             stackTrace: exception.stack,
             errorMessage: exception.errorMessage,
             debugMessage: exception.debugMessage,
             timestamp: exception.timestamp,
-            currentUserId: this.request?.user?.id ?? '',
+            currentUserId: this.request?.raw.jwtData?.id ?? '',
         });
         return this.errorLogRepository.save(errorLog);
     }
