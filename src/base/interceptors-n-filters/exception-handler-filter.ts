@@ -1,8 +1,8 @@
-import { ArgumentsHost, Catch, Logger } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { BaseExceptionFilter } from '@nestjs/core';
-import { ApiException } from '../../common/exceptions/api-exception';
-import { ErrorLogService } from '../../modules/error-log/error-log.service';
+import { ArgumentsHost, Catch, Logger } from '@nestjs/common'
+import { Response } from 'express'
+import { BaseExceptionFilter } from '@nestjs/core'
+import { ApiException } from '../../common/exceptions/api-exception'
+import { ErrorLogService } from '../../modules/error-log/error-log.service'
 
 @Catch()
 export class ExceptionHandlerFilter extends BaseExceptionFilter {
@@ -18,8 +18,7 @@ export class ExceptionHandlerFilter extends BaseExceptionFilter {
     catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
-        const request = ctx.getRequest<Request>();
-        const status = exception.getStatus();
+        // const request: RequestDetails = ctx.getRequest<Request>();
 
         interface ErrorDto {
             errorCode: string,
@@ -38,9 +37,10 @@ export class ExceptionHandlerFilter extends BaseExceptionFilter {
             timestamp: ex.timestamp.toISOString(),
         };
 
-        this.errorLogService.saveException(exception)
+        this.errorLogService.saveException(ex)
             .catch(error => this.logger.error(error));
 
+        const status = ex.getStatus()
         response.status(status).json(responseBody);
     }
 }

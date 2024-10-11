@@ -40,15 +40,15 @@ export class ApiException extends HttpException {
                 httpStatus: exception.getStatus(),
                 appErrorMessage: 'Internal server error.',
                 errorMessage: exception.message ?? 'Internal server error.',
-                debugMessage: exception.stack,
+                debugMessage: exception.stack ?? '',
             });
         }
         return new ApiException({
             errorCode: 'INTERNAL_SERVER_ERROR',
             httpStatus: HttpStatus.INTERNAL_SERVER_ERROR,
             appErrorMessage: 'Internal server error.',
-            errorMessage: exception.message ?? 'Internal server error.',
-            debugMessage: exception.stack,
+            errorMessage: 'Internal server error.',
+            debugMessage: '',
         });
     }
 }

@@ -11,9 +11,9 @@ import { ConfigService } from '@nestjs/config';
 export class ApiSessionService {
 
     private readonly logger = new Logger(ApiSessionService.name);
-    private readonly sessionTokenLength = this.configService.get<number>('SESSION_TOKEN_LENGTH');
-    private readonly accessTokenExpirationSeconds = this.configService.get<number>('ACCESS_TOKEN_EXPIRATION_SECONDS');
-    private readonly refreshTokenExpirationSeconds = this.configService.get<number>('REFRESH_TOKEN_EXPIRATION_SECONDS');
+    private readonly sessionTokenLength = this.configService.get<number>('SESSION_TOKEN_LENGTH') ?? 32;
+    private readonly accessTokenExpirationSeconds = this.configService.get<number>('ACCESS_TOKEN_EXPIRATION_SECONDS') ?? 3600;
+    private readonly refreshTokenExpirationSeconds = this.configService.get<number>('REFRESH_TOKEN_EXPIRATION_SECONDS') ?? 86400;
 
     constructor(
         @InjectRepository(ApiSession)

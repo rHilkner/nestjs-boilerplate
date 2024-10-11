@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { UserService } from '../../modules/users/user.service';
 import { ApiSessionService } from '../../modules/api-session/api-session.service';
 import { uuid } from 'uuidv4';
+import { RequestDetails } from '../../common/interfaces/request-details'
+import { User } from '../../modules/users/user.model'
 
 @Injectable()
 export class AuthenticationInterceptor implements NestInterceptor {
@@ -12,10 +14,10 @@ export class AuthenticationInterceptor implements NestInterceptor {
     ) {}
 
     async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
-        const request = context.switchToHttp().getRequest();
+        const request: RequestDetails = context.switchToHttp().getRequest();
 
         // Extract the bearer token from the Authorization header
-        const bearerToken = request.headers.authorization?.split(' ')[1];
+        const bearerToken: string = request.headers.authorization?.split(' ')[1];
 
         if (bearerToken) {
             // Validate the token and get the user
@@ -23,7 +25,9 @@ export class AuthenticationInterceptor implements NestInterceptor {
             const user = await this.userService.getUserById(apiSession.userId);
             // Attach the user to the request object
             request.apiSession = apiSession;
-            request.user = user;
+            if (user instanceof User) {
+                request.user = user
+            }
             request.transactionId = uuid();
         }
 

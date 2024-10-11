@@ -12,7 +12,7 @@ import { env_vars } from '../base/env_vars';
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => ({
+            useFactory: () => ({
                 type: 'postgres',
                 host: env_vars.DB_HOST,
                 port: env_vars.DB_PORT,

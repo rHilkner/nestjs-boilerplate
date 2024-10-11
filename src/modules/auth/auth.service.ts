@@ -1,30 +1,24 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { ApiSession } from '../api-session/api-session.model';
-import { ApiExceptions } from '../../common/exceptions/api-exceptions';
-import { ApiSessionService } from '../api-session/api-session.service';
-import { UserService } from '../users/user.service';
-import { REQUEST } from '@nestjs/core';
-import { SignUpDto } from './dtos/sign-up.dto';
-import { LoginDto } from './dtos/login.dto';
-import { UserRole } from '../../common/enums/user-role';
-import { compare } from '../../common/libs/encrypt.util';
+import { Inject, Injectable, Logger } from '@nestjs/common'
+import { ApiSession } from '../api-session/api-session.model'
+import { ApiExceptions } from '../../common/exceptions/api-exceptions'
+import { ApiSessionService } from '../api-session/api-session.service'
+import { UserService } from '../users/user.service'
+import { REQUEST } from '@nestjs/core'
+import { LoginDto } from './dtos/login.dto'
+import { UserRole } from '../../common/enums/user-role'
+import { compare } from '../../common/libs/encrypt.util'
+import { SignUpDto } from './dtos/sign-up.dto'
+import { RequestDetails } from '../../common/interfaces/request-details'
 
 @Injectable()
 export class AuthService {
     private readonly logger = new Logger(AuthService.name);
-    private readonly shouldSessionExpire: boolean = this.configService.get<boolean>('app-env.auth.should-session-expire');
-    private readonly sessionExpiresIn: number = this.configService.get<number>('app-env.auth.session-expires-in');
 
     constructor(
-        @Inject(REQUEST) private readonly request: any,
+        @Inject(REQUEST) private readonly request: RequestDetails,
         private readonly apiSessionService: ApiSessionService,
-        private readonly configService: ConfigService,
         private readonly userService: UserService,
-    ) {
-        this.shouldSessionExpire = this.configService.get<boolean>('app-env.auth.should-session-expire');
-        this.sessionExpiresIn = this.configService.get<number>('app-env.auth.session-expires-in');
-    }
+    ) {}
 
     /**
      * Authenticates a user and returns a new API session
@@ -33,6 +27,12 @@ export class AuthService {
      */
     async login({ email, password }: LoginDto): Promise<ApiSession> {
         let user = await this.userService.findByEmail(email);
+        if (user == null) {
+            throw ApiExceptions.UnauthorizedException(
+                'Invalid credentials',
+                `Invalid credentials for user [${email}]`
+            );
+        }
         this.logger.log(`Attempting to authenticate [${user.role} / ${user.email}] with password`);
         if (user.passwordHash == null || !await compare(password, user.passwordHash)) {
             throw ApiExceptions.UnauthorizedException(
@@ -62,12 +62,12 @@ export class AuthService {
     }
 
     async signOut(): Promise<void> {
-        const apiSession = await this.request.apiSession;
+        const apiSession = this.request.apiSession;
         await this.apiSessionService.invalidateApiSession(apiSession);
     }
 
     async refreshTokens(): Promise<ApiSession> {
-        const apiSession = await this.request.apiSession;
+        const apiSession = this.request.apiSession;
         return await this.apiSessionService.refreshTokens(apiSession);
     }
 }

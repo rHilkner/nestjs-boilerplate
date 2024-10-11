@@ -7,13 +7,14 @@ import { UserRole } from '../../common/enums/user-role';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { encrypt } from '../../common/libs/encrypt.util';
 import { ApiExceptions } from '../../common/exceptions/api-exceptions';
+import { RequestDetails } from '../../common/interfaces/request-details'
 
 @Injectable()
 export class UserService {
 
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
-        @Inject(REQUEST) private readonly request: any,
+        @Inject(REQUEST) private readonly request: RequestDetails,
     ) {}
 
     async getUserById(userId: string): Promise<User | null> {
@@ -33,13 +34,18 @@ export class UserService {
             email,
             passwordHash: await encrypt(password),
             role,
-            currentUserId: this.request.user?.id,
+            currentUserId: this.request.user?.id ?? '',
         });
         return await this.userRepository.save(newUser);
     }
 
     async updateUser(dto: UpdateUserDto): Promise<User> {
         const user = await this.userRepository.findOne({ where: { email: dto.email, role: dto.role } });
+
+        if (!user) {
+            throw ApiExceptions.NotFoundException(`User not found`, `User with email ${dto.email} and role ${dto.role} not found`);
+        }
+
         if (this.request.user.role !== UserRole.ADMIN && this.request.user.id !== user.id) {
             throw ApiExceptions.ForbiddenException(`You are not allowed to update this user`, `You are not allowed to update this user`);
         }
@@ -55,8 +61,14 @@ export class UserService {
         return await this.userRepository.find({ skip: page * limit, take: limit });
     }
 
-    async getCurrentUser(): Promise<User | null> {
-        return await this.userRepository.findOne({ where: { id: this.request.user?.id } });
+    async getCurrentUser(): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { id: this.request.user?.id } });
+
+        if (!user) {
+            throw ApiExceptions.NotFoundException(`User not found`, `User with id ${this.request.user?.id} not found`);
+        }
+
+        return user;
     }
 
     async save(user: User): Promise<User> {
