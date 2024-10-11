@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule, Scope } from '@nestjs/common'
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from '../users/user.module';
@@ -10,6 +10,10 @@ import { PostgresModule } from '../../config/postgres.module';
 import { AuthModule } from '../auth/auth.module';
 import { HttpModule } from '../http/http.module';
 import { RequestIdMiddleware } from '../../base/interceptors/request-id.middleware'
+import { AuthenticationInterceptor } from '../../base/interceptors/authentication.interceptor'
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
+import { CallLogInterceptor } from '../../base/interceptors/call-log.interceptor'
+import { ExceptionHandlerFilter } from '../../base/interceptors/exception-handler-filter'
 
 @Module({
     imports: [
@@ -23,7 +27,24 @@ import { RequestIdMiddleware } from '../../base/interceptors/request-id.middlewa
         UserModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+      {
+          provide: APP_FILTER,
+          scope: Scope.REQUEST,
+          useClass: ExceptionHandlerFilter,
+      },
+      {
+          provide: APP_INTERCEPTOR,
+          scope: Scope.REQUEST,
+          useClass: AuthenticationInterceptor,
+      },
+      {
+          provide: APP_INTERCEPTOR,
+          scope: Scope.REQUEST,
+          useClass: CallLogInterceptor,
+      },
+      AppService,
+    ],
 })
 export class AppModule implements NestModule {
     public configure(consumer: MiddlewareConsumer): void {
