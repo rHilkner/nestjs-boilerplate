@@ -1,12 +1,12 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './modules/app/app.module';
-import { AuthenticationInterceptor } from './base/interceptors-n-filters/authentication.interceptor';
+import { ApiSessionInterceptor } from './base/interceptors-n-filters/api-session.interceptor';
 import { CallLogService } from './modules/call-log/call-log.service';
 import { UserService } from './modules/users/user.service';
 import { CallLogInterceptor } from './base/interceptors-n-filters/call-log.interceptor';
 import { ApiSessionService } from './modules/api-session/api-session.service';
 import { ExceptionHandlerFilter } from './base/interceptors-n-filters/exception-handler-filter';
-import { RolesGuard } from './base/guards/roles.guard';
+import { AuthorizationGuard } from './base/guards/authorization.guard';
 import { ErrorLogService } from './modules/error-log/error-log.service';
 import { ValidationPipe } from '@nestjs/common';
 
@@ -18,11 +18,11 @@ async function bootstrap() {
     const errorLogService = app.get(ErrorLogService);
     const userService = app.get(UserService);
 
-    app.useGlobalGuards(new RolesGuard(new Reflector()));
+    app.useGlobalGuards(new AuthorizationGuard(new Reflector()));
     app.useGlobalFilters(new ExceptionHandlerFilter(errorLogService));
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
     app.useGlobalInterceptors(
-        new AuthenticationInterceptor(apiSessionService, userService),
+        new ApiSessionInterceptor(apiSessionService, userService),
         new CallLogInterceptor(sysCallLogService)
     );
 

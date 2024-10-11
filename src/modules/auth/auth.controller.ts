@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { LoginDto } from './dtos/login.dto';
-import { Roles } from '../../base/guards/roles.guard';
+import { AuthorizeRoles } from '../../base/guards/authorization.guard';
 import { UserRole } from '../../../shared/enums';
 
 @Controller('auth')
@@ -19,7 +19,7 @@ export class AuthController {
         return await this.authService.login(loginDto);
     }
 
-    @Roles(UserRole.CUSTOMER, UserRole.ADMIN)
+    @AuthorizeRoles([UserRole.CUSTOMER, UserRole.ADMIN])
     @Post('logout')
     async signOut() {
         return await this.authService.signOut();
