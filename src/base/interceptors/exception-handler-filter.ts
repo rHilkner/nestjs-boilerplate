@@ -3,7 +3,7 @@ import { BaseExceptionFilter } from '@nestjs/core'
 import { ApiException } from '../../common/exceptions/api-exception'
 import { ErrorLogService } from '../../modules/error-log/error-log.service'
 import { FastifyReply } from 'fastify'
-import { ErrorDto } from '../../../shared/dtos'
+import { ErrorDto } from '../../../shared/dtos/error.dto'
 
 @Catch()
 export class ExceptionHandlerFilter extends BaseExceptionFilter {

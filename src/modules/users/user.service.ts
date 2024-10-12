@@ -6,7 +6,7 @@ import { RequestContext } from '../../common/types/request-context'
 import { PrismaService } from '../prisma/prisma.service'
 import { AppUserModel } from '@prisma/client'
 import { ulid } from 'ulid'
-import { CreateUserDTO, UpdateUserDTO } from '../../../shared/dtos'
+import { CreateUserDTO, UpdateUserDTO } from '../../../shared/dtos/user-dtos'
 
 @Injectable()
 export class UserService {

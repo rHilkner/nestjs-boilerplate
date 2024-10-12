@@ -10,7 +10,7 @@ import {
   CreateUserDtoSchema,
   UpdateUserDTO,
   UpdateUserDtoSchema,
-} from '../../../shared/dtos'
+} from '../../../shared/dtos/user-dtos'
 
 @Controller('users')
 export class UserController {

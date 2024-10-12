@@ -3,7 +3,7 @@ import { AuthService } from './auth.service'
 import { AuthorizeRoles } from '../../base/guards/authorization.guard'
 import { UserRole } from '../../../shared/enums'
 import { ZodPipe } from '../../base/pipes/zod.pipe'
-import { LoginDTO, LoginDtoSchema } from '../../../shared/dtos'
+import { LoginDTO, LoginDtoSchema } from '../../../shared/dtos/user-dtos'
 
 @Controller('auth')
 export class AuthController {

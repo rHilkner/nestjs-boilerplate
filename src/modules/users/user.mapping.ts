@@ -1,5 +1,5 @@
 import { AppUserModel } from '@prisma/client'
-import { AppUserDTO } from '../../../shared/dtos'
+import { AppUserDTO } from '../../../shared/dtos/user-dtos'
 import { UserRole } from '../../../shared/enums'
 
 export function appUserModelToDto(user: AppUserModel): AppUserDTO {

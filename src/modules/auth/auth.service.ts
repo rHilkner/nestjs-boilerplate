@@ -5,7 +5,7 @@ import { UserService } from '../users/user.service'
 import { REQUEST } from '@nestjs/core'
 import { RequestContext } from '../../common/types/request-context'
 import { ApiSessionModel } from '@prisma/client'
-import { LoginDTO } from '../../../shared/dtos'
+import { LoginDTO } from '../../../shared/dtos/user-dtos'
 
 @Injectable()
 export class AuthService {
