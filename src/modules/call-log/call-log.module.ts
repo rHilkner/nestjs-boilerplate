@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { CallLog } from './call-log.model'
 import { CallLogService } from './call-log.service'
+import { PrismaModule } from '../prisma/prisma.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CallLog])],
+  imports: [PrismaModule],
   providers: [CallLogService],
   exports: [CallLogService],
 })

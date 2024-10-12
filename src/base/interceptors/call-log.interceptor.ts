@@ -2,9 +2,10 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable } from 'rxjs'
 import { tap } from 'rxjs/operators'
 import { CallLogService } from '../../modules/call-log/call-log.service'
-import { CallLog } from '../../modules/call-log/call-log.model'
 import { CallType } from '../../common/enums/call-type'
 import { RequestContext } from '../../common/types/request-context'
+import { MAIN_API } from '../../common/constants'
+import { ulid } from 'ulid'
 
 @Injectable()
 export class CallLogInterceptor implements NestInterceptor {
@@ -19,10 +20,11 @@ export class CallLogInterceptor implements NestInterceptor {
     } = context.switchToHttp().getResponse()
 
     // Create CallLog object
-    const sysCallLog = new CallLog({
+    const savedCallLog = await this.callLogService.save({
+      id: ulid(),
       requestId: request.raw.requestId,
-      userId: request.raw.jwtData?.userId,
-      sessionId: request.raw.apiSession?.id,
+      userId: request.raw.jwtData?.userId ?? null,
+      apiSessionId: request.raw.apiSession?.id ?? null,
       type: CallType.INCOMING,
       url: request.url,
       ip: request.ip,
@@ -31,23 +33,26 @@ export class CallLogInterceptor implements NestInterceptor {
       parameters: JSON.stringify(request.params),
       requestBody: JSON.stringify(request.body),
       requestHeaders: JSON.stringify(request.headers),
-      currentUserId: request.raw.jwtData?.userId,
+      createdBy: request.raw.jwtData?.userId ?? MAIN_API,
+      updatedBy: request.raw.jwtData?.userId ?? MAIN_API,
+      updatedDt: new Date(),
+      createdDt: new Date(),
+      httpStatus: response.statusCode,
+      responseBody: null,
+      responseHeaders: null,
+      startDt: new Date(),
+      endDt: null,
     })
-
-    // Save to DB
-    const savedCallLog = await this.callLogService.save(sysCallLog)
 
     return next
       .handle()
       .pipe(
         tap((resData) => {
-          savedCallLog.update({
-            httpStatus: response.statusCode,
-            responseBody: JSON.stringify(resData),
-            responseHeaders: JSON.stringify(response.getHeaders()),
-            endDt: new Date(),
-            currentUserId: savedCallLog.userId,
-          })
+          savedCallLog.httpStatus = response.statusCode
+          savedCallLog.responseBody = JSON.stringify(resData)
+          savedCallLog.responseHeaders = JSON.stringify(response.getHeaders())
+          savedCallLog.endDt = new Date()
+
           void this.callLogService.save(savedCallLog)
         }),
       )

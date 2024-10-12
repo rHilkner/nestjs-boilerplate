@@ -1,14 +1,13 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
-import { ApiSession } from '../api-session/api-session.model'
 import { ApiExceptions } from '../../common/exceptions/api-exceptions'
 import { ApiSessionService } from '../api-session/api-session.service'
 import { UserService } from '../users/user.service'
 import { REQUEST } from '@nestjs/core'
 import { LoginDto } from './dtos/login.dto'
 import { UserRole } from '../../../shared/enums'
-import { compare } from '../../common/libs/encrypt.util'
 import { SignUpDto } from './dtos/sign-up.dto'
 import { RequestContext } from '../../common/types/request-context'
+import { ApiSessionModel } from '@prisma/client'
 
 @Injectable()
 export class AuthService {
@@ -26,8 +25,9 @@ export class AuthService {
    * @param email
    * @param password
    */
-  async login({ email, password }: LoginDto): Promise<ApiSession> {
-    let user = await this.userService.findByEmail(email)
+  async login({ email }: LoginDto): Promise<ApiSessionModel> {
+    // TODO auth with Google, Facebook
+    const user = await this.userService.findByEmail(email)
     if (user == null) {
       throw ApiExceptions.UnauthorizedException(
         'Invalid credentials',
@@ -35,20 +35,10 @@ export class AuthService {
       )
     }
     this.logger.log(`Attempting to authenticate [${user.role} / ${user.email}] with password`)
-    if (user.passwordHash == null || !await compare(password, user.passwordHash)) {
-      throw ApiExceptions.UnauthorizedException(
-        'Invalid credentials',
-        `Invalid credentials for user [${user.email}]`,
-      )
-    }
-    user.lastAccessIp = this.request.ip
-    user = await this.userService.save(user)
-    const apiSession = await this.apiSessionService.createAndSaveApiSession(user)
-    apiSession.user = user
-    return apiSession
+    return await this.apiSessionService.createAndSaveApiSession(user)
   }
 
-  async signUp({ email, password }: SignUpDto): Promise<ApiSession> {
+  async signUp({ email, password }: SignUpDto): Promise<ApiSessionModel> {
     const user = await this.userService.findByEmail(email)
     if (user != null) {
       throw ApiExceptions.ConflictException(
@@ -58,7 +48,6 @@ export class AuthService {
     }
     const newUser = await this.userService.createUser(email, password, UserRole.CUSTOMER)
     const apiSession = await this.apiSessionService.createAndSaveApiSession(newUser)
-    apiSession.user = newUser
     return apiSession
   }
 
@@ -72,7 +61,7 @@ export class AuthService {
     this.logger.log(`Signed out API session [${apiSession.id}]`)
   }
 
-  async refreshTokens(): Promise<ApiSession> {
+  async refreshTokens(): Promise<ApiSessionModel> {
     const apiSession = this.request.raw.apiSession
     if (apiSession == null) {
       throw ApiExceptions.UnauthorizedException(

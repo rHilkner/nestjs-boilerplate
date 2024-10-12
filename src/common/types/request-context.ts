@@ -1,7 +1,6 @@
 import { UserRole } from '../../../shared/enums'
 import { FastifyRequest } from 'fastify'
-import { ApiSession } from '../../modules/api-session/api-session.model'
-import { User } from '../../modules/users/user.model'
+import { ApiSessionModel, AppUserModel } from '@prisma/client'
 
 export type RequestContext = FastifyRequest & {
   raw: RequestCustomContext;
@@ -19,6 +18,6 @@ export interface JwtData {
 export interface RequestCustomContext {
   requestId: string;
   jwtData?: JwtData;
-  apiSession?: ApiSession;
-  user?: User;
+  apiSession?: ApiSessionModel;
+  user?: AppUserModel;
 }

@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { CallLog } from './call-log.model'
-import { Repository } from 'typeorm'
-import { InjectRepository } from '@nestjs/typeorm'
+import { PrismaService } from '../prisma/prisma.service'
+import { CallLogModel } from '@prisma/client'
 
 @Injectable()
 export class CallLogService {
 
   constructor(
-    @InjectRepository(CallLog) private readonly callLogRepository: Repository<CallLog>,
-  ) {
-  }
+    private readonly prisma: PrismaService,
+  ) {}
 
-  save(sysCallLog: CallLog) {
-    return this.callLogRepository.save(sysCallLog)
+  save(sysCallLog: CallLogModel) {
+    return this.prisma.callLogModel.create({ data: sysCallLog })
   }
 
 }

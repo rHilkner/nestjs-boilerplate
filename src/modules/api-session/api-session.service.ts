@@ -1,43 +1,59 @@
-import { Injectable, Logger } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import { ApiSession } from './api-session.model'
-import { User } from '../users/user.model'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { ApiExceptions } from '../../common/exceptions/api-exceptions'
-import { Repository } from 'typeorm'
 import { generateRandomString } from '../../common/libs/encrypt.util'
-import { ConfigService } from '@nestjs/config'
+import { ApiSessionModel, AppUserModel } from '@prisma/client'
+import { PrismaService } from '../prisma/prisma.service'
+import { RequestContext } from '../../common/types/request-context'
+import { REQUEST } from '@nestjs/core'
+import { ulid } from 'ulid'
 
 @Injectable()
 export class ApiSessionService {
 
   private readonly logger = new Logger(ApiSessionService.name)
-  private readonly sessionTokenLength = this.configService.get<number>('SESSION_TOKEN_LENGTH') ?? 32
-  private readonly accessTokenExpirationSeconds = this.configService.get<number>('ACCESS_TOKEN_EXPIRATION_SECONDS') ?? 3600
-  private readonly refreshTokenExpirationSeconds = this.configService.get<number>('REFRESH_TOKEN_EXPIRATION_SECONDS') ?? 86400
+  private readonly sessionTokenLength = 32
+  private readonly accessTokenExpirationSeconds = 3600
+  private readonly refreshTokenExpirationSeconds = 86400
 
   constructor(
-    @InjectRepository(ApiSession)
-    private apiSessionRepository: Repository<ApiSession>,
-    private readonly configService: ConfigService,
-  ) {
-  }
+    private readonly prisma: PrismaService,
+    @Inject(REQUEST) private readonly request: RequestContext,
+  ) {}
 
-  async createAndSaveApiSession(user: User): Promise<ApiSession> {
+  async createAndSaveApiSession(user: AppUserModel): Promise<ApiSessionModel> {
     this.logger.debug(`Creating new API session for user: ${user.email}`)
     const currentDtMillis = new Date().getTime()
-    const newApiSession = new ApiSession({
-      userId: user.id,
-      accessToken: this.generateNewSessionToken(),
-      refreshToken: this.generateNewSessionToken(),
-      ipAddress: user.lastAccessIp,
-      accessTokenExpDt: new Date(currentDtMillis + this.accessTokenExpirationSeconds * 1000),
-      refreshTokenExpDt: new Date(currentDtMillis + this.refreshTokenExpirationSeconds * 1000),
+    return await this.prisma.apiSessionModel.create({
+      data: {
+        id: ulid(),
+        userId: user.id,
+        accessToken: this.generateNewSessionToken(),
+        refreshToken: this.generateNewSessionToken(),
+        accessTokenExpDt: new Date(currentDtMillis + this.accessTokenExpirationSeconds * 1000),
+        refreshTokenExpDt: new Date(currentDtMillis + this.refreshTokenExpirationSeconds * 1000),
+        ipAddress: this.request.ip,
+        startDt: new Date(),
+        lastActivityDt: new Date(),
+        active: true,
+        createdDt: new Date(),
+        createdBy: user.id,
+        updatedDt: new Date(),
+        updatedBy: user.id,
+      },
+      include: {
+        user: true,
+      },
     })
-    return await this.apiSessionRepository.save(newApiSession)
   }
 
-  async getActiveApiSession(accessToken: string): Promise<ApiSession> {
-    const apiSession = await this.apiSessionRepository.findOne({ where: { accessToken } })
+  async getActiveApiSession(accessToken: string): Promise<ApiSessionModel> {
+    const apiSession = await this.prisma.apiSessionModel.findFirst({
+      where: {
+        accessToken,
+        active: true,
+      },
+    })
+
     if (!apiSession) {
       this.logger.error(`Invalid authorization token: ${accessToken}`)
       throw ApiExceptions.BadRequestException(
@@ -51,27 +67,45 @@ export class ApiSessionService {
         `Authorization token revoked ${accessToken}`,
       )
     }
-    apiSession.lastActivityDt = new Date()
-    return await this.apiSessionRepository.save(apiSession)
+
+    return await this.prisma.apiSessionModel.update({
+      where: {
+        id: apiSession.id,
+      },
+      data: {
+        lastActivityDt: apiSession.lastActivityDt,
+      },
+    })
   }
 
   /**
    * Refreshes the access and refresh tokens for the given API session
    * @param apiSession
    */
-  async refreshTokens(apiSession: ApiSession): Promise<ApiSession> {
+  async refreshTokens(apiSession: ApiSessionModel): Promise<ApiSessionModel> {
     const currentDate = new Date()
     apiSession.accessToken = this.generateNewSessionToken()
     apiSession.refreshToken = this.generateNewSessionToken()
     apiSession.accessTokenExpDt = new Date(currentDate.getTime() + this.accessTokenExpirationSeconds * 1000)
     apiSession.refreshTokenExpDt = new Date(currentDate.getTime() + this.refreshTokenExpirationSeconds * 1000)
     apiSession.lastActivityDt = currentDate
-    return await this.apiSessionRepository.save(apiSession)
+    return await this.prisma.apiSessionModel.update({
+      where: {
+        id: apiSession.id,
+      },
+      data: apiSession,
+    })
   }
 
-  async invalidateApiSession(apiSession: ApiSession) {
-    apiSession.active = false
-    await this.apiSessionRepository.save(apiSession)
+  async invalidateApiSession(apiSession: ApiSessionModel) {
+    await this.prisma.apiSessionModel.update({
+      where: {
+        id: apiSession.id,
+      },
+      data: {
+        active: false,
+      },
+    })
   }
 
   private generateNewSessionToken(): string {

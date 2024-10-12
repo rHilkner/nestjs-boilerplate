@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enum definitions
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum CallType {
+  INCOMING
+  OUTGOING
+}
+
+// User model
+model AppUserModel {
+  id        String   @id
+  email     String   @unique
+  role      UserRole
+  createdDt DateTime @default(now())
+  createdBy String
+  updatedDt DateTime @updatedAt
+  updatedBy String
+
+  // Relations
+  apiSessions ApiSessionModel[]
+  callLogs    CallLogModel[]
+  errorLogs   ErrorLogModel[]
+}
+
+// ApiSession model
+model ApiSessionModel {
+  id                String   @id
+  userId            String
+  accessToken       String
+  accessTokenExpDt  DateTime
+  refreshToken      String
+  refreshTokenExpDt DateTime
+  ipAddress         String?
+  startDt           DateTime
+  lastActivityDt    DateTime
+  active            Boolean
+  createdDt         DateTime @default(now())
+  createdBy         String
+  updatedDt         DateTime @updatedAt
+  updatedBy         String
+
+  // Relations
+  user     AppUserModel   @relation(fields: [userId], references: [id])
+  callLogs CallLogModel[]
+
+  @@index([accessToken], name: "ix_api_session_1")
+  @@index([refreshToken], name: "ix_api_session_2")
+}
+
+// CallLog model
+model CallLogModel {
+  id              String    @id
+  requestId       String
+  userId          String?
+  apiSessionId    String?
+  type            CallType
+  url             String?
+  ip              String?
+  method          String?
+  endpoint        String?
+  parameters      String?
+  requestBody     String?
+  requestHeaders  String?
+  httpStatus      Int?
+  responseBody    String?
+  responseHeaders String?
+  startDt         DateTime
+  endDt           DateTime?
+  createdDt       DateTime  @default(now())
+  createdBy       String
+  updatedDt       DateTime  @updatedAt
+  updatedBy       String
+
+  // Relations
+  user       AppUserModel?   @relation(fields: [userId], references: [id])
+  apiSession ApiSessionModel? @relation(fields: [apiSessionId], references: [id])
+  errorLogs  ErrorLogModel[]
+
+  @@index([userId], name: "fk_call_log_1")
+  @@index([apiSessionId], name: "fk_call_log_2")
+}
+
+// ErrorLog model
+model ErrorLogModel {
+  id             String   @id
+  requestId      String?
+  userId         String?
+  callLogId      String
+  httpStatus     Float?
+  exceptionClass String
+  stackTrace     String
+  errorMessage   String
+  debugMessage   String?
+  timestamp      DateTime
+  createdDt      DateTime @default(now())
+  createdBy      String
+  updatedDt      DateTime @updatedAt
+  updatedBy      String
+
+  // Relations
+  user    AppUserModel? @relation(fields: [userId], references: [id])
+  callLog CallLogModel  @relation(fields: [callLogId], references: [id])
+
+  @@index([userId], name: "fk_error_log_1")
+  @@index([callLogId], name: "fk_error_log_2")
+}

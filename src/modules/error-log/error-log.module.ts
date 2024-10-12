@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { ErrorLog } from './error-log.model'
 import { ErrorLogService } from './error-log.service'
+import { PrismaModule } from '../prisma/prisma.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ErrorLog])],
+  imports: [PrismaModule],
   providers: [ErrorLogService],
 })
 export class ErrorLogModule {

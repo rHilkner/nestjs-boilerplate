@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { ApiSession } from './api-session.model'
 import { ApiSessionService } from './api-session.service'
 import { ConfigModule } from '@nestjs/config'
+import { PrismaModule } from '../prisma/prisma.module'
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ApiSession]),
+    PrismaModule,
     ConfigModule,
   ],
   providers: [ApiSessionService],
