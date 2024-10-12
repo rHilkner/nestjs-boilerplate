@@ -6,6 +6,8 @@ import { UserDto } from './dtos/user.dto'
 import { AuthorizeRoles } from '../../base/guards/authorization.guard'
 import { UserRole } from '../../../shared/enums'
 import { appUserModelToDto } from './user.mapping'
+import { ZodPipe } from '../../base/pipes/zod.pipe'
+import { CreateUserDtoSchema, UpdateUserDtoSchema } from '../../../shared/dtos'
 
 @Controller('users')
 export class UserController {
@@ -29,14 +31,14 @@ export class UserController {
 
   @AuthorizeRoles([UserRole.ADMIN])
   @Post('create')
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserDto> {
+  async create(@Body(new ZodPipe(CreateUserDtoSchema)) createUserDto: CreateUserDto): Promise<UserDto> {
     const user = await this.userService.createUser(createUserDto.email, createUserDto.password, createUserDto.role)
     return appUserModelToDto(user)
   }
 
   @AuthorizeRoles([UserRole.ADMIN, UserRole.CUSTOMER])
   @Post('update')
-  async update(@Body() updateUserDto: UpdateUserDto): Promise<UserDto> {
+  async update(@Body(new ZodPipe(UpdateUserDtoSchema)) updateUserDto: UpdateUserDto): Promise<UserDto> {
     const user = await this.userService.updateUser(updateUserDto)
     return appUserModelToDto(user)
   }

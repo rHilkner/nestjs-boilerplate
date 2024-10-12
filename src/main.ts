@@ -30,7 +30,6 @@ async function bootstrap() {
 
   app.useGlobalGuards(new AuthorizationGuard(new Reflector()));
   app.useGlobalFilters(new ExceptionHandlerFilter(errorLogService));
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(
     new ApiSessionInterceptor(apiSessionService, userService),
     new CallLogInterceptor(sysCallLogService),

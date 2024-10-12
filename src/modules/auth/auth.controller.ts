@@ -4,6 +4,8 @@ import { SignUpDto } from './dtos/sign-up.dto'
 import { LoginDto } from './dtos/login.dto'
 import { AuthorizeRoles } from '../../base/guards/authorization.guard'
 import { UserRole } from '../../../shared/enums'
+import { ZodPipe } from '../../base/pipes/zod.pipe'
+import { LoginDtoSchema, SignUpDtoSchema } from '../../../shared/dtos'
 
 @Controller('auth')
 export class AuthController {
@@ -11,12 +13,12 @@ export class AuthController {
   }
 
   @Post('signup')
-  async signUp(@Body() signUpDto: SignUpDto) {
+  async signUp(@Body(new ZodPipe(SignUpDtoSchema)) signUpDto: SignUpDto) {
     return await this.authService.signUp(signUpDto)
   }
 
   @Post('login')
-  async login(@Body() loginDto: LoginDto) {
+  async login(@Body(new ZodPipe(LoginDtoSchema)) loginDto: LoginDto) {
     return await this.authService.login(loginDto)
   }
 
