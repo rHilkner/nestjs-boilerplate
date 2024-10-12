@@ -1,8 +1,9 @@
 import { ArgumentsHost, Catch, Logger } from '@nestjs/common'
-import { Response } from 'express'
 import { BaseExceptionFilter } from '@nestjs/core'
 import { ApiException } from '../../common/exceptions/api-exception'
 import { ErrorLogService } from '../../modules/error-log/error-log.service'
+import { FastifyReply } from 'fastify'
+import { ErrorDto } from '../../../shared/dtos'
 
 @Catch()
 export class ExceptionHandlerFilter extends BaseExceptionFilter {
@@ -15,33 +16,23 @@ export class ExceptionHandlerFilter extends BaseExceptionFilter {
     super()
   }
 
-  catch(exception: any, host: ArgumentsHost) {
-    const ctx = host.switchToHttp()
-    const response = ctx.getResponse<Response>()
+  public override catch(exception: unknown, host: ArgumentsHost): void {
+    const response = host.switchToHttp().getResponse<FastifyReply>();
 
-    // const request: RequestDetails = ctx.getRequest<Request>();
+    const apiException = ApiException.fromAnyException(exception);
 
-    interface ErrorDto {
-      errorCode: string,
-      httpStatus: number,
-      appErrorMessage: string,
-      errorMessage: string,
-      timestamp: string,
-    }
-
-    const ex = ApiException.fromException(exception)
-    const responseBody: ErrorDto = {
-      errorCode: ex.errorCode,
-      httpStatus: ex.httpStatus,
-      appErrorMessage: ex.appErrorMessage,
-      errorMessage: ex.errorMessage,
-      timestamp: ex.timestamp.toISOString(),
-    }
-
-    this.errorLogService.saveException(ex)
+    // override function cannot be async, error handling done async
+    this.errorLogService.saveException(apiException)
       .catch(error => this.logger.error(error))
 
-    const status = ex.getStatus()
-    response.status(status).json(responseBody)
+    const errorDto: ErrorDto = {
+      errorCode: apiException.errorCode,
+      httpStatus: apiException.httpStatus,
+      errorMessage: apiException.errorMessage,
+      appErrorMessage: apiException.appErrorMessage,
+      timestamp: apiException.timestamp.toISOString(),
+    };
+
+    response.status(apiException.httpStatus).send(errorDto)
   }
 }

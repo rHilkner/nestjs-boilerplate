@@ -5,6 +5,15 @@ import { UserRole } from './enums';
  * DTO Schemas and Types
  */
 
+// Error DTO
+export interface ErrorDto {
+    errorCode: string,
+    httpStatus: number,
+    appErrorMessage: string,
+    errorMessage: string,
+    timestamp: string,
+}
+
 // Create User DTO
 export const CreateUserDtoSchema = z.object({
     email: z.string().email(),
