@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { REQUEST } from '@nestjs/core'
 import { UserRole } from '../../../shared/enums'
-import { UpdateUserDto } from './dtos/update-user.dto'
 import { ApiExceptions } from '../../common/exceptions/api-exceptions'
 import { RequestContext } from '../../common/types/request-context'
 import { PrismaService } from '../prisma/prisma.service'
 import { AppUserModel } from '@prisma/client'
 import { ulid } from 'ulid'
+import { CreateUserDTO, UpdateUserDTO } from '../../../shared/dtos'
 
 @Injectable()
 export class UserService {
@@ -25,23 +25,23 @@ export class UserService {
     return await this.prisma.appUserModel.findUnique({ where: { email } })
   }
 
-  async createUser(email: string, password: string, role: UserRole): Promise<AppUserModel> {
-    const user = await this.prisma.appUserModel.findUnique({ where: { email, role } })
+  async createUser(dto: CreateUserDTO): Promise<AppUserModel> {
+    const user = await this.prisma.appUserModel.findUnique({ where: { email: dto.email, role: dto.role } })
     if (user) {
-      throw ApiExceptions.ForbiddenException('User already exists', `User with email ${email} and role ${role} already exists`)
+      throw ApiExceptions.ForbiddenException('User already exists', `User with email ${dto.email} and role ${dto.role} already exists`)
     }
     return await this.prisma.appUserModel.create({
       data: {
         id: ulid(),
-        email,
-        role,
+        email: dto.email,
+        role: dto.role,
         createdBy: this.request.raw.jwtData?.userId ?? '',
         updatedBy: this.request.raw.jwtData?.userId ?? '',
       },
     })
   }
 
-  async updateUser(dto: UpdateUserDto): Promise<AppUserModel> {
+  async updateUser(dto: UpdateUserDTO): Promise<AppUserModel> {
     const user = await this.prisma.appUserModel.findUnique({ where: { email: dto.email, role: dto.role } })
 
     if (!user) {
