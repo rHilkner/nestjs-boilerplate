@@ -20,7 +20,7 @@ export class HttpService {
     await this.callLogService.save(
       new CallLog({
         requestId: this.request.raw.requestId,
-        userId: this.request.raw.jwtData?.id,
+        userId: this.request.raw.jwtData?.userId,
         sessionId: this.request.raw.apiSession?.id,
         type: CallType.INCOMING,
         url: url,
@@ -30,7 +30,7 @@ export class HttpService {
         parameters: JSON.stringify(this.request.params),
         requestBody: JSON.stringify(this.request.body),
         requestHeaders: JSON.stringify(this.request.headers),
-        currentUserId: this.request.raw.jwtData?.id,
+        currentUserId: this.request.raw.jwtData?.userId,
       }),
     )
     return response

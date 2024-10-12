@@ -22,7 +22,7 @@ export class AuthenticationInterceptor implements NestInterceptor {
     if (bearer === 'Bearer' && token) {
       const jwtData = this.decodeJwt(token)
       if (jwtData) {
-        this.logger.debug(`JWT user authenticated: ${jwtData.email}`)
+        this.logger.debug(`JWT user authenticated: ${jwtData.userEmail}`)
         request.raw.jwtData = jwtData
       }
     }

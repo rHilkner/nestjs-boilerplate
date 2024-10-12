@@ -35,7 +35,7 @@ export class UserService {
       email,
       passwordHash: await encrypt(password),
       role,
-      currentUserId: this.request.raw.jwtData?.id ?? '',
+      currentUserId: this.request.raw.jwtData?.userId ?? '',
     })
     return await this.userRepository.save(newUser)
   }
@@ -47,13 +47,13 @@ export class UserService {
       throw ApiExceptions.NotFoundException(`User not found`, `User with email ${dto.email} and role ${dto.role} not found`)
     }
 
-    if (this.request.raw.jwtData?.role !== UserRole.ADMIN && this.request.raw.jwtData?.id !== user.id) {
+    if (this.request.raw.jwtData?.userRole !== UserRole.ADMIN && this.request.raw.jwtData?.userId !== user.id) {
       throw ApiExceptions.ForbiddenException(`You are not allowed to update this user`, `You are not allowed to update this user`)
     }
     user.update({
       email: dto.email,
       role: dto.role,
-      currentUserId: this.request.raw.jwtData?.id,
+      currentUserId: this.request.raw.jwtData?.userId,
     })
     return await this.userRepository.save(user)
   }
@@ -63,10 +63,10 @@ export class UserService {
   }
 
   async getCurrentUser(): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id: this.request.raw.jwtData?.id } })
+    const user = await this.userRepository.findOne({ where: { id: this.request.raw.jwtData?.userId } })
 
     if (!user) {
-      throw ApiExceptions.NotFoundException(`User not found`, `User with id ${this.request.raw.jwtData?.id} not found`)
+      throw ApiExceptions.NotFoundException(`User not found`, `User with id ${this.request.raw.jwtData?.userId} not found`)
     }
 
     return user

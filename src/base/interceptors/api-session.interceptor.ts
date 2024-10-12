@@ -10,8 +10,7 @@ export class ApiSessionInterceptor implements NestInterceptor {
   constructor(
     private readonly apiSessionService: ApiSessionService,
     private readonly userService: UserService,
-  ) {
-  }
+  ) {}
 
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest<RequestContext>()
@@ -24,7 +23,7 @@ export class ApiSessionInterceptor implements NestInterceptor {
       request.raw.apiSession = apiSession
       const user = await this.userService.getUserById(apiSession.userId)
       if (user) {
-        request.raw.jwtData = user
+        request.raw.user = user
       }
     }
 

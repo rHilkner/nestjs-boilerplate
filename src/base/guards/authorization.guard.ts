@@ -33,6 +33,6 @@ export class AuthorizationGuard implements CanActivate {
       throw new UnauthorizedException('User is not authenticated')
     }
 
-    return roles.includes(user.role)
+    return roles.includes(user.userRole)
   }
 }

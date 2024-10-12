@@ -18,7 +18,7 @@ export class ErrorLogService {
 
   saveException(exception: ApiException) {
     const errorLog = new ErrorLog({
-      userId: this.request?.raw.jwtData?.id ?? '',
+      userId: this.request?.raw.jwtData?.userId ?? '',
       requestId: this.request?.raw.requestId ?? '',
       httpStatus: exception.httpStatus,
       exceptionClass: exception.name,
@@ -26,7 +26,7 @@ export class ErrorLogService {
       errorMessage: exception.errorMessage,
       debugMessage: exception.debugMessage,
       timestamp: exception.timestamp,
-      currentUserId: this.request?.raw.jwtData?.id ?? '',
+      currentUserId: this.request?.raw.jwtData?.userId ?? '',
     })
     return this.errorLogRepository.save(errorLog)
   }
