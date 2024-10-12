@@ -9,9 +9,11 @@ import { ApiSessionModule } from '../api-session/api-session.module'
 import { AuthModule } from '../auth/auth.module'
 import { HttpModule } from '../http/http.module'
 import { RequestIdMiddleware } from '../../base/interceptors/request-id.middleware'
+import { ConfigModule } from '@nestjs/config'
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     ErrorLogModule,
     ApiSessionModule,
     AuthModule,

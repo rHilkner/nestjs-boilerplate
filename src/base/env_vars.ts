@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import { ApiExceptions } from '../common/exceptions/api-exceptions'
+import { ConfigService } from '@nestjs/config'
 
 const envSchema = z.object({
   PORT: z.number(),
@@ -7,8 +9,20 @@ const envSchema = z.object({
 
 type EnvVars = z.infer<typeof envSchema>;
 
-// export const env_vars: EnvVars = envSchema.parse(process.env)
-export const env_vars: EnvVars = {
-  PORT: 3000,
-  DB_URL: 'mongodb://localhost:27017/test',
+export let env_vars: EnvVars;
+
+export function setEnvVars(configService: ConfigService) {
+  const envVars: z.SafeParseReturnType<EnvVars, EnvVars> = envSchema.safeParse({
+    PORT: Number(configService.get('PORT')),
+    DB_URL: configService.get('DB_URL'),
+  })
+
+  if (!envVars.success) {
+    console.error("Environment variable validation failed", envVars.error.format());
+    throw ApiExceptions.InternalServerErrorException("Invalid environment variables", `Environment variable validation failed: ${envVars.error.message}`);
+  }
+
+  env_vars = envVars.data;
 }
+
+

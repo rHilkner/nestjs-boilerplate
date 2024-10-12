@@ -1,9 +1,8 @@
 import { NestFactory, Reflector } from '@nestjs/core'
 import { AppModule } from './modules/app/app.module'
 import { AuthorizationGuard } from './base/guards/authorization.guard'
-import * as dotenv from 'dotenv'
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify'
-import { env_vars } from './base/env_vars'
+import { env_vars, setEnvVars } from './base/env_vars'
 import { ExceptionHandlerFilter } from './base/interceptors/exception-handler-filter'
 import { ApiSessionInterceptor } from './base/interceptors/api-session.interceptor'
 import { CallLogInterceptor } from './base/interceptors/call-log.interceptor'
@@ -13,8 +12,7 @@ import { ApiSessionService } from './modules/api-session/api-session.service'
 import { CallLogService } from './modules/call-log/call-log.service'
 import { AuthenticationInterceptor } from './base/interceptors/authentication.interceptor'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-
-dotenv.config()
+import { ConfigService } from '@nestjs/config'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -22,6 +20,8 @@ async function bootstrap() {
     new FastifyAdapter(),
   )
   app.enableCors()
+
+  setEnvVars(app.get(ConfigService))
 
   const apiSessionService = app.get(ApiSessionService);
   const sysCallLogService = app.get(CallLogService);
