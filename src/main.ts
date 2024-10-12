@@ -12,6 +12,7 @@ import { UserService } from './modules/users/user.service'
 import { ApiSessionService } from './modules/api-session/api-session.service'
 import { CallLogService } from './modules/call-log/call-log.service'
 import { AuthenticationInterceptor } from './base/interceptors/authentication.interceptor'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 dotenv.config()
 
@@ -35,7 +36,14 @@ async function bootstrap() {
     new AuthenticationInterceptor(),
   );
 
-  app.useGlobalGuards(new AuthorizationGuard(new Reflector()))
+  const config = new DocumentBuilder()
+    .setTitle('NestJS API')
+    .setDescription('The NestJS API description')
+    .setVersion('1.0')
+    .addTag('genesis')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   const port = env_vars.PORT
   await app.listen(port, '0.0.0.0');
